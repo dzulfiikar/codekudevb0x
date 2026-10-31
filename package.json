@@ -1,0 +1,13 @@
+{
+  "name": "codekudevb0x",
+  "private": true,
+  "scripts": {
+    "typecheck": "npm --prefix server run typecheck && npm --prefix web run typecheck",
+    "lint": "oxlint",
+    "e2e": "npm --prefix server run e2e"
+  },
+  "devDependencies": {
+    "oxlint": "1.78.0"
+  },
+  "type": "module"
+}

@@ -1,0 +1,385 @@
+{
+  "startedAt": "2026-10-31T07:01:10.980Z",
+  "baseUrl": "http://127.0.0.1:8787",
+  "steps": [
+    {
+      "name": "add host",
+      "ok": true,
+      "seconds": 1
+    },
+    {
+      "name": "create workspace",
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "name": "workspace running",
+      "ok": true,
+      "seconds": 221
+    },
+    {
+      "name": "first project ready",
+      "ok": true,
+      "seconds": 40
+    },
+    {
+      "name": "service URLs respond",
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "name": "hot reload",
+      "ok": true,
+      "seconds": 1
+    },
+    {
+      "name": "delete workspace",
+      "ok": true,
+      "seconds": 5
+    },
+    {
+      "name": "delete host",
+      "ok": true,
+      "seconds": 0
+    }
+  ],
+  "workspace": {
+    "id": "bb032081-a492-4d95-9da0-f51af5947802",
+    "hostId": "313b5346-5f4f-4c7c-b413-994a1986e6a7",
+    "name": "e2e-mvw1yjt9",
+    "vmid": 102,
+    "ip": "192.168.0.49",
+    "status": "running",
+    "agentClis": [
+      "claude"
+    ],
+    "cores": 2,
+    "memoryMb": 2048,
+    "diskGb": 20,
+    "hasGithubToken": true,
+    "error": null,
+    "projects": [
+      {
+        "id": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+        "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+        "name": "sandbox-demo",
+        "repoUrl": "https://github.com/dzulfiikar/sandbox-demo",
+        "status": "ready",
+        "services": [
+          {
+            "url": "http://192.168.0.49:3000",
+            "name": "vite",
+            "port": 3000,
+            "reachable": true
+          }
+        ],
+        "error": null,
+        "createdAt": "2026-10-31T07:04:44.568Z"
+      }
+    ],
+    "createdAt": "2026-10-31T07:01:11.767Z"
+  },
+  "hotReload": {
+    "file": "index.html",
+    "marker": "e2e-reload-mvw2455d",
+    "seenAfterMs": 73
+  },
+  "events": [
+    {
+      "type": "status",
+      "status": "cloning_vm",
+      "id": 180,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:11.777Z"
+    },
+    {
+      "type": "log",
+      "message": "Cloning template 9000 to VM 102",
+      "id": 181,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:11.823Z"
+    },
+    {
+      "type": "status",
+      "status": "configuring_vm",
+      "id": 182,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:14.063Z"
+    },
+    {
+      "type": "log",
+      "message": "Uploaded cloud-init seed workspace-102-seed.iso",
+      "id": 183,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:14.611Z"
+    },
+    {
+      "type": "log",
+      "message": "Set 2 cores, 2048 MB, 20 GB disk",
+      "id": 184,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:16.955Z"
+    },
+    {
+      "type": "status",
+      "status": "starting",
+      "id": 185,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:16.959Z"
+    },
+    {
+      "type": "log",
+      "message": "Waiting for cloud-init to install the guest agent",
+      "id": 186,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:01:19.150Z"
+    },
+    {
+      "type": "log",
+      "message": "VM is up at 192.168.0.49",
+      "id": 187,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:03:37.099Z"
+    },
+    {
+      "type": "status",
+      "status": "installing_tools",
+      "id": 188,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:03:37.105Z"
+    },
+    {
+      "type": "command",
+      "output": "status: done\n",
+      "command": "cloud-init status --wait || true",
+      "exitCode": 0,
+      "id": 189,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:03:39.989Z"
+    },
+    {
+      "type": "command",
+      "output": " http://security.ubuntu.com/ubuntu noble-security InRelease\nGet:6 https://deb.nodesource.com/node_22.x nodistro/main amd64 Packages [12.8 kB]\nFetched 25.0 kB in 2s (16.2 kB/s)\nReading package lists...\nBuilding dependency tree...\nReading state information...\n15 packages can be upgraded. Run 'apt list --upgradable' to see them.\n\u001b[1;34m2026-10-31 07:03:50 - Repository configured successfully.\u001b[0m\n\u001b[38;5;79m2026-10-31 07:03:50 - To install Node.js, run: apt install nodejs -y\u001b[0m\n\u001b[38;5;79m2026-10-31 07:03:50 - You can use N|solid Runtime as a node.js alternative\u001b[0m\n\u001b[1;32m2026-10-31 07:03:50 - To install N|solid Runtime, run: apt install nsolid -y \n\u001b[0m\nReading package lists...\nBuilding dependency tree...\nReading state information...\nThe following NEW packages will be installed:\n  nodejs\n0 upgraded, 1 newly installed, 0 to remove and 15 not upgraded.\nNeed to get 37.8 MB of archives.\nAfter this operation, 236 MB of additional disk space will be used.\nGet:1 https://deb.nodesource.com/node_22.x nodistro/main amd64 nodejs amd64 22.23.4-1nodesource1 [37.8 MB]\nFetched 37.8 MB in 4s (8753 kB/s)\nSelecting previously unselected package nodejs.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 75474 files and directories currently installed.)\r\nPreparing to unpack .../nodejs_22.23.4-1nodesource1_amd64.deb ...\r\nUnpacking nodejs (22.23.4-1nodesource1) ...\r\nSetting up nodejs (22.23.4-1nodesource1) ...\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\n\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.\n\n\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.\n\ndebconf: unable to initialize frontend: Dialog\ndebconf: (TERM is not set, so the dialog frontend is not usable.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\ndpkg-preconfigure: unable to re-open stdin: \ndebconf: unable to initialize frontend: Dialog\ndebconf: (TERM is not set, so the dialog frontend is not usable.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\n\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.\n\ndebconf: unable to initialize frontend: Dialog\ndebconf: (TERM is not set, so the dialog frontend is not usable.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\ndpkg-preconfigure: unable to re-open stdin: \ndebconf: unable to initialize frontend: Dialog\ndebconf: (TERM is not set, so the dialog frontend is not usable.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\n\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n",
+      "command": "curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs",
+      "exitCode": 0,
+      "id": 190,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:01.669Z"
+    },
+    {
+      "type": "command",
+      "output": "",
+      "command": "install -d -o dev -g dev /home/dev/projects",
+      "exitCode": 0,
+      "id": 191,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:02.071Z"
+    },
+    {
+      "type": "command",
+      "output": "# github.com:22 SSH-2.0-a09ebb4f\n# github.com:22 SSH-2.0-a09ebb4f\n# github.com:22 SSH-2.0-a09ebb4f\n# github.com:22 SSH-2.0-a09ebb4f\n# github.com:22 SSH-2.0-a09ebb4f\n",
+      "command": "install -d -m 700 -o dev -g dev /home/dev/.ssh && ssh-keyscan github.com >> /home/dev/.ssh/known_hosts && chown dev:dev /home/dev/.ssh/known_hosts",
+      "exitCode": 0,
+      "id": 192,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:08.428Z"
+    },
+    {
+      "type": "command",
+      "output": "",
+      "command": "grep -q '.local/bin' /home/dev/.bashrc || echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> /home/dev/.bashrc",
+      "exitCode": 0,
+      "id": 193,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:09.768Z"
+    },
+    {
+      "type": "command",
+      "output": "",
+      "command": "usermod -aG docker dev",
+      "exitCode": 0,
+      "id": 194,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:10.423Z"
+    },
+    {
+      "type": "command",
+      "output": "Setting up Claude Code...\n\nChecking installation status...\nInstalling Claude Code native build latest...\nSetting up launcher and shell integration...\nâ  Setup notes:\n  â Native installation exists but ~/.local/bin is not in your PATH. Run:\n\n    echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.bashrc && source ~/.bashrc\n\nâ Claude Code successfully installed!\n\n  Version: 2.1.316\n\n  Location: ~/.local/bin/claude\n\n\n  Next: Run claude --help to get started\n\nâ  Setup notes:\n  â Native installation exists but ~/.local/bin is not in your PATH. Run:\n\n    echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.bashrc && source ~/.bashrc\n\n\nâ Installation complete!\n\n",
+      "command": "sudo -iu dev bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'",
+      "exitCode": 0,
+      "id": 195,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:44.555Z"
+    },
+    {
+      "type": "status",
+      "status": "running",
+      "id": 196,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": null,
+      "at": "2026-10-31T07:04:44.565Z"
+    },
+    {
+      "type": "status",
+      "status": "queued",
+      "id": 197,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:44.569Z"
+    },
+    {
+      "type": "status",
+      "status": "cloning_repo",
+      "id": 198,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:44.576Z"
+    },
+    {
+      "type": "command",
+      "output": "Cloning into '/home/dev/projects/sandbox-demo'...\n",
+      "command": "git clone https://github.com/dzulfiikar/sandbox-demo.git /home/dev/projects/sandbox-demo",
+      "exitCode": 0,
+      "id": 199,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:47.096Z"
+    },
+    {
+      "type": "status",
+      "status": "configuring_services",
+      "id": 200,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:47.102Z"
+    },
+    {
+      "type": "command",
+      "output": "/home/dev/projects/sandbox-demo:\nREADME.md\nindex.html\npackage-lock.json\npackage.json\nsrc\nvite.config.js\n\n/home/dev/projects/sandbox-demo/src:\nmain.js\nstyle.css\n",
+      "command": "ls -R /home/dev/projects/sandbox-demo",
+      "exitCode": 0,
+      "id": 201,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:50.906Z"
+    },
+    {
+      "type": "command",
+      "output": "{\n  \"name\": \"sandbox-demo\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\"\n  },\n  \"devDependencies\": {\n    \"vite\": \"^7.1.0\"\n  }\n}\n",
+      "command": "cat /home/dev/projects/sandbox-demo/package.json",
+      "exitCode": 0,
+      "id": 202,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:53.705Z"
+    },
+    {
+      "type": "command",
+      "output": "import { defineConfig } from \"vite\";\n\nexport default defineConfig({\n  server: {\n    host: \"0.0.0.0\",\n    port: Number(process.env.PORT ?? 3000),\n    strictPort: true,\n  },\n});\n",
+      "command": "cat /home/dev/projects/sandbox-demo/vite.config.js",
+      "exitCode": 0,
+      "id": 203,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:04:58.717Z"
+    },
+    {
+      "type": "command",
+      "output": "\nadded 14 packages, and audited 15 packages in 1s\n\n5 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n",
+      "command": "cd /home/dev/projects/sandbox-demo && sudo -u dev npm install",
+      "exitCode": 0,
+      "id": 204,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:05.048Z"
+    },
+    {
+      "type": "command",
+      "output": "",
+      "command": "cat <<EOF > /etc/systemd/system/sandbox-demo-vite.service\n[Unit]\nDescription=Sandbox Demo Vite Service\nAfter=network.target\n\n[Service]\nUser=dev\nWorkingDirectory=/home/dev/projects/sandbox-demo\nExecStart=/usr/bin/npm run dev\nRestart=always\nEnvironment=NODE_ENV=development\n\n[Install]\nWantedBy=multi-user.target\nEOF\n",
+      "exitCode": 0,
+      "id": 205,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:13.770Z"
+    },
+    {
+      "type": "command",
+      "output": "Created symlink /etc/systemd/system/multi-user.target.wants/sandbox-demo-vite.service â /etc/systemd/system/sandbox-demo-vite.service.\n",
+      "command": "systemctl daemon-reload && systemctl enable --now sandbox-demo-vite.service",
+      "exitCode": 0,
+      "id": 206,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:18.192Z"
+    },
+    {
+      "type": "command",
+      "output": "LISTEN 0      511          0.0.0.0:3000       0.0.0.0:*    users:((\"node\",pid=8847,fd=25))          \n",
+      "command": "ss -ltnp | grep 3000",
+      "exitCode": 0,
+      "id": 207,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:21.418Z"
+    },
+    {
+      "type": "command",
+      "output": "HTTP/1.1 200 OK\r\nVary: Origin\r\nContent-Type: text/html\r\nCache-Control: no-cache\r\nEtag: W/\"232-Yrz4FJu1np58LzybZ/sMAZFyqRQ\"\r\nDate: Sat, 31 Oct 2026 07:05:23 GMT\r\nConnection: keep-alive\r\nKeep-Alive: timeout=5\r\n\r\n  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n",
+      "command": "curl -I http://localhost:3000",
+      "exitCode": 0,
+      "id": 208,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:23.903Z"
+    },
+    {
+      "type": "status",
+      "status": "verifying",
+      "id": 209,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:25.562Z"
+    },
+    {
+      "type": "services",
+      "services": [
+        {
+          "url": "http://192.168.0.49:3000",
+          "name": "vite",
+          "port": 3000,
+          "reachable": true
+        }
+      ],
+      "id": 210,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:25.646Z"
+    },
+    {
+      "type": "status",
+      "status": "ready",
+      "id": 211,
+      "workspaceId": "bb032081-a492-4d95-9da0-f51af5947802",
+      "projectId": "f544b9fc-6080-48fb-b14b-c229d79a5c63",
+      "at": "2026-10-31T07:05:25.652Z"
+    }
+  ],
+  "finishedAt": "2026-10-31T07:05:41.465Z"
+}

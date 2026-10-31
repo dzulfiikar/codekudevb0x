@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 880" width="1400" height="880" role="img" aria-labelledby="title description">
+  <title id="title">CodekuDevB0x architecture</title>
+  <desc id="description">The web UI and API server run on the laptop. The server calls Gemma 4 through the Gemini API and drives Proxmox VE through its API over Tailscale. Proxmox clones workspace VMs from a template; Gemma's commands run inside the VM through the guest agent. The user reaches VMs over a Tailscale subnet route with SSH and HTTP.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#A0A6AD"/>
+    </marker>
+    <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8FD694"/>
+    </marker>
+    <style>
+      .bg { fill: #141619; }
+      .zone { fill: #17191D; stroke: #2E3238; stroke-width: 1.5; }
+      .node { fill: #1B1E22; stroke: #3A3F46; stroke-width: 1.5; }
+      .node-focus { fill: #1B1E22; stroke: #8FD694; stroke-width: 2; }
+      .inner { fill: #141619; stroke: #3A3F46; stroke-width: 1; }
+      .zone-label { fill: #A0A6AD; font: 600 14px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.02em; }
+      .title { fill: #E7E4DD; font: 700 26px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .subtitle { fill: #A0A6AD; font: 400 15px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .name { fill: #E7E4DD; font: 700 16px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .text { fill: #A0A6AD; font: 400 13px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .mono { fill: #A0A6AD; font: 400 12.5px "Source Code Pro", ui-monospace, Menlo, monospace; }
+      .mono-up { fill: #8FD694; font: 500 12.5px "Source Code Pro", ui-monospace, Menlo, monospace; }
+      .edge { stroke: #A0A6AD; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .edge-both { stroke: #A0A6AD; stroke-width: 1.5; fill: none; marker-end: url(#arrow); marker-start: url(#arrow); }
+      .edge-user { stroke: #8FD694; stroke-width: 1.75; fill: none; marker-end: url(#arrow-accent); }
+      .edge-label { fill: #E7E4DD; font: 600 12px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .edge-label-user { fill: #8FD694; font: 600 12px "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif; }
+      .label-bg { fill: #141619; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="880"/>
+
+  <text class="title" x="30" y="48">CodekuDevB0x</text>
+  <text class="subtitle" x="30" y="72">A spare laptop running Proxmox becomes sandbox VMs. Gemma 4 starts each GitHub project in dev mode; you SSH in and code.</text>
+
+  <!-- Zone: laptop -->
+  <rect class="zone" x="30" y="96" width="400" height="760" rx="12"/>
+  <text class="zone-label" x="50" y="124">YOUR LAPTOP (DOCKER COMPOSE)</text>
+
+  <rect class="node" x="55" y="140" width="350" height="92" rx="8"/>
+  <text class="name" x="75" y="168">Web UI</text>
+  <text class="text" x="75" y="190">React, Vite, Tailwind: hosts, workspaces,</text>
+  <text class="text" x="75" y="208">projects, Gemma settings, live agent log</text>
+  <text class="mono" x="75" y="224">served by the API server</text>
+
+  <rect class="node" x="55" y="282" width="350" height="146" rx="8"/>
+  <text class="name" x="75" y="310">API server + PostgreSQL</text>
+  <text class="text" x="75" y="332">Node 22, Express 5, Zod, Drizzle, Postgres 17</text>
+  <text class="text" x="75" y="350">Tokens and Gemini key encrypted (AES-256-GCM)</text>
+  <text class="text" x="75" y="368">Builds the template and VMs, one project</text>
+  <text class="text" x="75" y="386">queue per workspace, checks every port</text>
+  <text class="mono" x="75" y="414">127.0.0.1:8787</text>
+
+  <rect class="node" x="55" y="478" width="350" height="112" rx="8"/>
+  <text class="name" x="75" y="506">Gemma agent loop</text>
+  <text class="mono" x="75" y="528">run_command, report_services</text>
+  <text class="text" x="75" y="550">Waits out the free-tier token limit and</text>
+  <text class="text" x="75" y="568">switches between the 26B and 31B models</text>
+
+  <rect class="node" x="55" y="668" width="350" height="164" rx="8"/>
+  <text class="name" x="75" y="696">Your terminal or VS Code</text>
+  <text class="mono-up" x="75" y="720">ssh -A dev@&lt;vm-ip&gt;</text>
+  <text class="text" x="75" y="744">Edit code or run claude / agy in</text>
+  <text class="text" x="75" y="762">~/projects/&lt;project&gt;; the dev server</text>
+  <text class="text" x="75" y="780">reloads on save</text>
+  <text class="text" x="75" y="806">git push uses your own key through</text>
+  <text class="text" x="75" y="824">SSH agent forwarding</text>
+
+  <!-- Zone: internet services -->
+  <rect class="zone" x="500" y="96" width="380" height="380" rx="12"/>
+  <text class="zone-label" x="520" y="124">INTERNET SERVICES</text>
+
+  <rect class="node" x="525" y="140" width="330" height="112" rx="8"/>
+  <text class="name" x="545" y="168">Gemini API</text>
+  <text class="mono" x="545" y="192">gemma-4-26b-a4b-it</text>
+  <text class="mono" x="545" y="212">gemma-4-31b-it (fallback)</text>
+  <text class="text" x="545" y="236">Open-weight Gemma 4, function calling</text>
+
+  <rect class="node" x="525" y="300" width="330" height="152" rx="8"/>
+  <text class="name" x="545" y="328">GitHub</text>
+  <text class="text" x="545" y="350">Clone: fine-grained read-only token,</text>
+  <text class="text" x="545" y="368">sent to the VM on stdin, never in argv</text>
+  <text class="text" x="545" y="392">Remote switched to git@github.com</text>
+  <text class="text" x="545" y="416">Push: your key via agent forwarding,</text>
+  <text class="text" x="545" y="434">no write token in the VM</text>
+
+  <!-- Zone: tailnet -->
+  <rect class="zone" x="500" y="520" width="380" height="336" rx="12"/>
+  <text class="zone-label" x="520" y="548">TAILSCALE TAILNET</text>
+
+  <rect class="node" x="525" y="566" width="330" height="96" rx="8"/>
+  <text class="name" x="545" y="594">HTTPS to the Proxmox API</text>
+  <text class="mono" x="545" y="618">your-host.your-tailnet.ts.net</text>
+  <text class="text" x="545" y="642">Valid certificate, port 443</text>
+
+  <rect class="node" x="525" y="700" width="330" height="132" rx="8"/>
+  <text class="name" x="545" y="728">Subnet route</text>
+  <text class="mono" x="545" y="752">192.168.0.0/24</text>
+  <text class="text" x="545" y="776">The host shares its LAN, so the laptop</text>
+  <text class="text" x="545" y="794">reaches each VM's SSH and service ports.</text>
+  <text class="text" x="545" y="812">Nothing is installed in the VMs for this.</text>
+
+  <!-- Zone: Proxmox host -->
+  <rect class="zone" x="950" y="96" width="420" height="760" rx="12"/>
+  <text class="zone-label" x="970" y="124">PROXMOX VE 9 HOST (OLD LAPTOP)</text>
+
+  <rect class="node" x="975" y="140" width="370" height="96" rx="8"/>
+  <text class="name" x="995" y="168">Proxmox API</text>
+  <text class="text" x="995" y="190">Driven only through the API, no scripts</text>
+  <text class="text" x="995" y="208">on the host: upload, create, clone,</text>
+  <text class="text" x="995" y="226">configure, start, guest-agent exec</text>
+
+  <rect class="node" x="975" y="276" width="370" height="78" rx="8"/>
+  <text class="name" x="995" y="304">Template 9000</text>
+  <text class="text" x="995" y="326">Ubuntu 24.04 cloud image, imported with</text>
+  <text class="text" x="995" y="344">import-from; built by Prepare host</text>
+
+  <rect class="node-focus" x="975" y="394" width="370" height="438" rx="8"/>
+  <text class="name" x="995" y="422">Workspace VM</text>
+  <text class="mono" x="995" y="444">linked clone, cpu: host, vmbr0, DHCP</text>
+  <text class="text" x="995" y="470">Cloud-init seed ISO made by the app:</text>
+  <text class="text" x="995" y="488">user dev + your SSH key, qemu-guest-agent,</text>
+  <text class="text" x="995" y="506">Docker, git</text>
+  <text class="text" x="995" y="530">Then: Node 22, Claude Code or Antigravity CLI</text>
+
+  <rect class="inner" x="995" y="552" width="330" height="80" rx="6"/>
+  <text class="mono-up" x="1013" y="578">~/projects/sandbox-demo</text>
+  <text class="text" x="1013" y="600">systemd unit: vite dev server</text>
+  <text class="mono" x="1013" y="620">:3000, hot reload</text>
+
+  <rect class="inner" x="995" y="648" width="330" height="80" rx="6"/>
+  <text class="mono-up" x="1013" y="674">~/projects/notes-api</text>
+  <text class="text" x="1013" y="696">systemd unit: node --watch</text>
+  <text class="mono" x="1013" y="716">free port chosen by Gemma</text>
+
+  <text class="text" x="995" y="760">Gemma's commands run here as root through</text>
+  <text class="text" x="995" y="778">the guest agent, never on the laptop or</text>
+  <text class="text" x="995" y="796">the host. Repo contents are untrusted input.</text>
+
+  <!-- Edges -->
+  <path class="edge-both" d="M230 232 V280"/>
+  <rect class="label-bg" x="240" y="246" width="78" height="18" rx="3"/>
+  <text class="edge-label" x="244" y="259">REST + SSE</text>
+
+  <path class="edge-both" d="M230 428 V476"/>
+
+  <path class="edge-both" d="M405 306 H462 V196 H523"/>
+  <path class="edge" d="M405 400 H482 V614 H523"/>
+  <path class="edge" d="M855 614 H930 V188 H973"/>
+
+  <path class="edge" d="M1160 236 V274"/>
+  <path class="edge" d="M1160 354 V392"/>
+  <rect class="label-bg" x="1170" y="364" width="86" height="18" rx="3"/>
+  <text class="edge-label" x="1174" y="377">linked clone</text>
+
+  <path class="edge" d="M1345 188 H1360 V420 H1347"/>
+
+  <path class="edge" d="M855 420 H973"/>
+  <rect class="label-bg" x="864" y="396" width="60" height="18" rx="3"/>
+  <text class="edge-label" x="868" y="409">git clone</text>
+
+  <path class="edge-user" d="M405 750 H523"/>
+  <path class="edge-user" d="M855 750 H973"/>
+  <rect class="label-bg" x="862" y="758" width="104" height="34" rx="3"/>
+  <text class="edge-label-user" x="866" y="771">SSH, http://</text>
+  <text class="edge-label-user" x="866" y="787">vm-ip:port</text>
+</svg>

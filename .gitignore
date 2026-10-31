@@ -1,0 +1,26 @@
+# Dependencies and build output
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Local data (old SQLite files, Docker volumes mounted locally)
+data/
+
+# Test output (copies worth keeping go in docs/evidence/)
+e2e-report.json
+coverage/
+
+# Local review notes and drafts
+docs/anti-slop/
+
+# OS and editor files
+.DS_Store
+*.log
+.idea/
+.vscode/

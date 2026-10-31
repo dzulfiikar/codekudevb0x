@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import"],
+  "categories": { "correctness": "error", "suspicious": "warn" },
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "oxc/no-async-endpoint-handlers": "off"
+  },
+  "ignorePatterns": ["**/dist/**", "**/node_modules/**", "tools/oxlint/anti-slop/**"]
+}
