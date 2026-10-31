@@ -10,7 +10,7 @@ export type ProxmoxConnection = {
   allowSelfSigned: boolean;
 };
 
-export type VmType = "missing" | "template" | "vm";
+type VmType = "missing" | "template" | "vm";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 type RequestBody = Record<string, string | number | string[]> | FormData;

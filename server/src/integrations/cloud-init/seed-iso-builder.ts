@@ -6,7 +6,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-export type SeedOptions = { instanceId: string; hostname: string; sshPublicKey: string };
+type SeedOptions = { instanceId: string; hostname: string; sshPublicKey: string };
 
 // JSON strings are valid YAML scalars, so JSON.stringify quotes user values safely.
 function userData(sshPublicKey: string) {
