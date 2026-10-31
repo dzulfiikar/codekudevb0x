@@ -4,6 +4,12 @@ Turn an old laptop running Proxmox into on-demand sandbox VMs for working on Git
 
 Built at Hacktoberfest Hack Day Kota Batam (MLH), 31 Oct 2026. Entered in "Best Use of Gemma 4" and "Best Open-Source AI Project".
 
+## Demo
+
+[![A workspace VM with sandbox-demo ready, its dev server link and the ssh command](docs/demo-poster.jpg)](docs/demo.mp4)
+
+[Watch the 90-second demo video](docs/demo.mp4). It is one real run on a home Proxmox VE 9.2 server: add the host, create a workspace, Gemma 4 sets up a Vite repo, and an edit made over SSH shows up in the browser. Waiting is sped up and marked.
+
 ## How it works
 
 ![CodekuDevB0x architecture: laptop, Gemini API, GitHub, Tailscale, and the Proxmox host with a workspace VM](docs/architecture.png)
