@@ -1,12 +1,4 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "./schema.js";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL ?? "postgres://codeku:codeku@127.0.0.1:5433/codeku",
-});
-
-export const db = drizzle(pool, { schema });
+import { pool } from "./client.js";
 
 export async function createTables() {
   await pool.query(`

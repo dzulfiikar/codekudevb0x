@@ -25,6 +25,7 @@ Projects in one workspace are set up **one at a time** (a per-workspace queue) s
 ## Stack and layout
 
 - `server/`: Node 22+, TypeScript, Express 5, Zod, Drizzle ORM on PostgreSQL 17 (`pg`, `DATABASE_URL`), `@google/genai`, `undici` (per-host TLS dispatcher). Port `8787`.
+- `server/src` is layered: `routes/` (Express, SSE) → `controllers/` (Zod input, no req/res) → `services/` (business rules, background jobs) → `repositories/` (the only database access), plus `integrations/` (Proxmox, Gemini, cloud-init ISO), `infrastructure/` (config, database, encryption, event bus, HTTP app) and `shared/` (API types, errors, helpers). Services throw `NotFoundError`/`ConflictError`/`InvalidInputError`; the HTTP app maps them to 404/409/400 `{ message }`.
 - `web/`: Vite, React, TypeScript, Tailwind CSS v4. Dev proxy `/api` to `http://localhost:8787`.
 - Two independent npm packages (no npm workspaces). Root `package.json` only has scripts:
   - `typecheck`: `npm --prefix server run typecheck && npm --prefix web run typecheck`
@@ -124,7 +125,7 @@ Delete: `POST .../status/stop` (ignore if already stopped), poll task, `DELETE /
 3. `verifying`: for each reported service, TCP connect to `ip:port` from the server, retry every 5 s for 60 s. If any fail, give the agent one more round with the failure, then verify again.
 4. `ready` with services, or `failed` with an error message.
 
-## Agent loop (`server/src/agent.ts`)
+## Agent loop (`server/src/integrations/gemini/setup-agent.ts`, `gemini-client.ts`)
 
 - `@google/genai`: `new GoogleGenAI({ apiKey })` with the key and models read from settings when the session starts, `ai.models.generateContent({ model, contents, config: { systemInstruction, tools: [{ functionDeclarations }] } })`, read `response.functionCalls`, append the model turn and a `functionResponse` part per call, loop.
 - Tools:
@@ -135,16 +136,16 @@ Delete: `POST .../status/stop` (ignore if already stopped), poll task, `DELETE /
 - If Gemma returns no function calls, nudge once ("Call a tool."), then fail.
 - `scripts/smoke-gemma.ts`: reads the key and primary model from the settings table (`DATABASE_URL`), makes one call with one function declaration, prints `functionCalls`. If it is empty, switch the loop to JSON output parsed with Zod.
 
-## Proxmox client (`server/src/proxmox.ts`)
+## Proxmox client (`server/src/integrations/proxmox/proxmox-client.ts`)
 
 - Base `https://HOST:8006/api2/json`, header `Authorization: PVEAPIToken=<tokenId>=<secret>`.
 - `allowSelfSigned` -> `new undici.Agent({ connect: { rejectUnauthorized: false } })` as `dispatcher` for that host only. Never set `NODE_TLS_REJECT_UNAUTHORIZED`.
 - Response body is `{ data }`; throw an error with Proxmox's message on non-2xx.
 - Guest exec: `POST /nodes/{node}/qemu/{vmid}/agent/exec` `{ command: string[], "input-data"?: string }` -> `{ pid }`; `GET .../agent/exec-status?pid=` -> `{ exited, exitcode, "out-data", "err-data" }`. Check the request encoding against the Proxmox API viewer; send JSON.
 
-## Data (`server/src/db/schema.ts`)
+## Data (`server/src/infrastructure/database/schema.ts`)
 
-`hosts` (token secret encrypted), `workspaces` (GitHub token encrypted, ssh public key, agent CLIs JSON), `projects` (services JSON), `events` (serial id, workspaceId, projectId nullable, type, payload JSON, at), `settings` (single row id 1: Gemini key encrypted, primary model, fallback model). JSON columns are `jsonb`. Tables are created at startup with `CREATE TABLE IF NOT EXISTS`. `secrets.ts`: AES-256-GCM with `APP_SECRET`, random 12-byte IV, stored as `iv.tag.ciphertext` base64.
+`hosts` (token secret encrypted), `workspaces` (GitHub token encrypted, ssh public key, agent CLIs JSON), `projects` (services JSON), `events` (serial id, workspaceId, projectId nullable, type, payload JSON, at), `settings` (single row id 1: Gemini key encrypted, primary model, fallback model). JSON columns are `jsonb`. Tables are created at startup with `CREATE TABLE IF NOT EXISTS`. `infrastructure/encryption.ts`: AES-256-GCM with `APP_SECRET`, random 12-byte IV, stored as `iv.tag.ciphertext` base64.
 
 ## UI (variant B, see `design/b/*.png`)
 

@@ -1,7 +1,8 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createProxmoxClient, shellQuote, wait } from "../src/proxmox.js";
-import type { Host, Workspace } from "../src/types.js";
+import { ProxmoxClient } from "../src/integrations/proxmox/proxmox-client.js";
+import type { Host, Workspace } from "../src/shared/api-types.js";
+import { quoteForShell, sleep } from "../src/shared/shell.js";
 
 const baseUrl = process.env.E2E_BASE_URL ?? "http://localhost:8787";
 const reportPath = resolve(process.cwd(), "../e2e-report.json");
@@ -68,16 +69,16 @@ async function step<Result>(name: string, action: () => Promise<Result>) {
   }
 }
 
-async function pollWorkspace(workspaceId: string, isDone: (workspace: Workspace) => boolean, timeoutMs: number) {
-  const deadline = Date.now() + timeoutMs;
+async function pollWorkspace(workspaceId: string, isDone: (workspace: Workspace) => boolean, timeoutMilliseconds: number) {
+  const deadline = Date.now() + timeoutMilliseconds;
   while (Date.now() < deadline) {
     const workspace = await api<Workspace>("GET", `/api/workspaces/${workspaceId}`);
     report.workspace = workspace;
     if (workspace.status === "failed") throw new Error(`Workspace failed: ${workspace.error}`);
     if (isDone(workspace)) return workspace;
-    await wait(10_000);
+    await sleep(10_000);
   }
-  throw new Error(`Timed out after ${timeoutMs / 1000} s`);
+  throw new Error(`Timed out after ${timeoutMilliseconds / 1000} s`);
 }
 
 let host: Host | undefined;
@@ -104,7 +105,7 @@ try {
         const current = (await api<Host[]>("GET", "/api/hosts")).find((entry) => entry.id === hostId);
         if (current?.templateStatus === "ready") return;
         if (current?.templateStatus === "failed") throw new Error(`Prepare failed: ${current.templateMessage}`);
-        await wait(5000);
+        await sleep(5000);
       }
       throw new Error("Template not ready after 30 minutes");
     });
@@ -149,7 +150,7 @@ try {
     const marker = `e2e-reload-${Date.now().toString(36)}`;
     if (before.includes(marker)) throw new Error("Marker already present before the edit");
 
-    const proxmox = createProxmoxClient({
+    const proxmox = new ProxmoxClient({
       baseUrl: host.baseUrl,
       tokenId: host.tokenId,
       tokenSecret: requireEnvironment("E2E_PROXMOX_TOKEN_SECRET"),
@@ -157,8 +158,8 @@ try {
       allowSelfSigned: host.allowSelfSigned,
     });
     const path = `/home/dev/projects/${project.name}/${file}`;
-    const append = `printf '%s\\n' ${shellQuote(`<!-- ${marker} -->`)} >> ${shellQuote(path)}`;
-    const result = await proxmox.execInGuest(ready.vmid, ["sudo", "-u", "dev", "bash", "-c", append]);
+    const append = `printf '%s\\n' ${quoteForShell(`<!-- ${marker} -->`)} >> ${quoteForShell(path)}`;
+    const result = await proxmox.runInGuest(ready.vmid, ["sudo", "-u", "dev", "bash", "-c", append]);
     if (result.exitCode !== 0) throw new Error(`Editing ${path} failed: ${result.stderr}`);
 
     const editedAt = Date.now();
@@ -168,7 +169,7 @@ try {
         report.hotReload = { file, marker, seenAfterMs: Date.now() - editedAt };
         return;
       }
-      await wait(1000);
+      await sleep(1000);
     }
     throw new Error(`Marker did not appear at ${service.url} within 30 s of editing ${file}`);
   });
@@ -184,7 +185,7 @@ try {
       while (Date.now() < deadline) {
         const response = await fetch(`${baseUrl}/api/workspaces/${id}`);
         if (response.status === 404) return;
-        await wait(5000);
+        await sleep(5000);
       }
       throw new Error("Workspace still exists after 5 minutes");
     }).catch(() => {

@@ -1,5 +1,5 @@
 import { boolean, integer, jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
-import type { EventBody, HostCheck, ProjectStatus, Service, TemplateStatus, WorkspaceStatus } from "../types.js";
+import type { EventBody, HostCheck, ProjectStatus, Service, TemplateStatus, WorkspaceStatus } from "../../shared/api-types.js";
 
 export const hosts = pgTable("hosts", {
   id: text("id").primaryKey(),

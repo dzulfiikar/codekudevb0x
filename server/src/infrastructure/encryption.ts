@@ -1,12 +1,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { config } from "./config.js";
 
-function findKey() {
-  const secret = Buffer.from(process.env.APP_SECRET ?? "", "base64");
-  if (secret.length < 32) throw new Error("APP_SECRET must be at least 32 random bytes, base64 encoded");
-  return createHash("sha256").update(secret).digest();
-}
-
-const key = findKey();
+const key = createHash("sha256").update(config.appSecret).digest();
 
 export function encrypt(plaintext: string) {
   const iv = randomBytes(12);

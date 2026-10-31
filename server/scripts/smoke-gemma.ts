@@ -1,16 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
-import { findGemmaSettings } from "../src/settings.js";
+import { settingsService } from "../src/services/settings-service.js";
 
-const gemma = await findGemmaSettings();
-if (!gemma.apiKey) {
+const geminiSettings = await settingsService.findGeminiSettings();
+if (!geminiSettings.apiKey) {
   console.error("No Gemini API key stored. Add one on the Settings page first.");
   process.exit(1);
 }
-const model = gemma.primaryModel;
-const ai = new GoogleGenAI({ apiKey: gemma.apiKey });
+const model = geminiSettings.primaryModel;
+const client = new GoogleGenAI({ apiKey: geminiSettings.apiKey });
 
 try {
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model,
     contents: "List the files in the current directory.",
     config: {
