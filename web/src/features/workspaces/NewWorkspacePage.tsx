@@ -1,8 +1,14 @@
 import { useState, type FormEvent } from "react";
-import { api, errorMessage, repoUrlPattern, workspaceNamePattern, type AgentCli } from "../api";
-import { Link, navigate } from "../router";
-import { ErrorBox, LoadingText, inputClass, primaryButton, secondaryButton, useHosts, useResource } from "../ui";
-import { Field, FormSection } from "./Field";
+import { api, errorMessage } from "../../shared/api-client";
+import type { AgentCli } from "../../shared/api-types";
+import { ErrorBox } from "../../shared/components/ErrorBox";
+import { Field, FormSection } from "../../shared/components/Field";
+import { LoadingText } from "../../shared/components/LoadingText";
+import { inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
+import { repoUrlPattern, workspaceNamePattern } from "../../shared/patterns";
+import { Link, navigate } from "../../shared/router";
+import { useResource } from "../../shared/use-resource";
+import { useHosts } from "../hosts/HostsContext";
 
 const coreOptions = [1, 2, 4, 6, 8];
 const memoryOptions = [2048, 4096, 8192, 16384];

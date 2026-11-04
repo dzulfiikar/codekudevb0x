@@ -1,6 +1,7 @@
 import { CheckCircleIcon, WarningIcon, XCircleIcon } from "@phosphor-icons/react";
-import type { CheckStatus, HostCheck } from "../api";
-import type { LabelTone } from "../ui";
+import type { CheckStatus, HostCheck } from "../../shared/api-types";
+import type { LabelTone } from "../../shared/components/StatusLabel";
+import { plural } from "../../shared/format";
 
 const statusName: Record<CheckStatus, string> = {
   ok: "Passed",
@@ -14,10 +15,6 @@ const detailTone: Record<CheckStatus, string> = {
   fail: "text-danger",
 };
 
-function plural(count: number, word: string): string {
-  return `${count} ${word}${count === 1 ? "" : "s"}`;
-}
-
 export function summarizeCheck(check: HostCheck): { text: string; label: string; tone: LabelTone } {
   const failures = check.checks.filter((item) => item.status === "fail").length;
   const warnings = check.checks.filter((item) => item.status === "warn").length;
@@ -30,16 +27,6 @@ export function summarizeCheck(check: HostCheck): { text: string; label: string;
   }
   if (warnings > 0) return { text: plural(warnings, "warning"), label: "Ready", tone: "attention" };
   return { text: `${plural(check.checks.length, "check")} passed`, label: "Ready", tone: "success" };
-}
-
-export function formatTimeAgo(isoTime: string): string {
-  const minutes = Math.floor((Date.now() - new Date(isoTime).getTime()) / 60000);
-  if (Number.isNaN(minutes)) return "at an unknown time";
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes} min ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} h ago`;
-  return `${plural(Math.floor(hours / 24), "day")} ago`;
 }
 
 function StatusIcon({ status }: { status: CheckStatus }) {

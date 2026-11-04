@@ -1,19 +1,13 @@
 import { CheckCircleIcon, KeyIcon, PlugsConnectedIcon, TrashIcon } from "@phosphor-icons/react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { api, errorMessage, type KeyTestResult, type SettingsUpdate } from "../api";
-import {
-  ErrorBox,
-  LoadingText,
-  StatusLabel,
-  boxClass,
-  boxHeaderClass,
-  dangerButton,
-  inputClass,
-  primaryButton,
-  secondaryButton,
-  useResource,
-} from "../ui";
-import { Field } from "./Field";
+import { api, errorMessage } from "../../shared/api-client";
+import type { KeyTestResult, SettingsUpdate } from "../../shared/api-types";
+import { ErrorBox } from "../../shared/components/ErrorBox";
+import { Field } from "../../shared/components/Field";
+import { LoadingText } from "../../shared/components/LoadingText";
+import { StatusLabel } from "../../shared/components/StatusLabel";
+import { boxClass, boxHeaderClass, dangerButton, inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
+import { useResource } from "../../shared/use-resource";
 
 const selectClass = `${inputClass} select-chevron`;
 

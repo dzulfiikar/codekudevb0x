@@ -1,8 +1,12 @@
 import { InfoIcon, XIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { api, errorMessage, repoUrlPattern, workspaceNamePattern, type Project, type Workspace } from "../api";
-import { ErrorBox, inputClass, isSettingUp, primaryButton, secondaryButton } from "../ui";
-import { Field } from "./Field";
+import { api, errorMessage } from "../../shared/api-client";
+import type { Project, Workspace } from "../../shared/api-types";
+import { ErrorBox } from "../../shared/components/ErrorBox";
+import { Field } from "../../shared/components/Field";
+import { inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
+import { repoUrlPattern, workspaceNamePattern } from "../../shared/patterns";
+import { isSettingUp } from "./project-status";
 
 type ProjectFormErrors = { repoUrl?: string; name?: string };
 
