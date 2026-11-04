@@ -1,6 +1,6 @@
 import { PlusIcon, TrashIcon } from "@phosphor-icons/react";
 import { useState, type RefObject } from "react";
-import { api, errorMessage } from "../../shared/api-client";
+import { toErrorMessage } from "../../shared/api-client";
 import type { Workspace } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { StatusLabel } from "../../shared/components/StatusLabel";
@@ -8,6 +8,7 @@ import { dangerButton, primaryButton, secondaryButton } from "../../shared/compo
 import { Link, navigate } from "../../shared/router";
 import { useHosts } from "../hosts/HostsContext";
 import { workspaceLabel } from "./workspace-status";
+import { workspacesApi } from "./workspaces-api";
 
 export function WorkspaceHeader({
   workspace,
@@ -29,10 +30,10 @@ export function WorkspaceHeader({
     setIsDeleting(true);
     setDeleteError(undefined);
     try {
-      await api.deleteWorkspace(workspace.id);
+      await workspacesApi.delete(workspace.id);
       navigate("/workspaces");
     } catch (caught) {
-      setDeleteError(errorMessage(caught));
+      setDeleteError(toErrorMessage(caught));
       setIsDeleting(false);
       setIsConfirmingDelete(false);
     }

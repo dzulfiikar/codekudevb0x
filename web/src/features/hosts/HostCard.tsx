@@ -1,13 +1,14 @@
 import { ArrowsClockwiseIcon, HardDrivesIcon, PlugsConnectedIcon } from "@phosphor-icons/react";
 import { useState } from "react";
-import { api, errorMessage } from "../../shared/api-client";
-import type { Host, HostTestResult, Workspace } from "../../shared/api-types";
+import { toErrorMessage } from "../../shared/api-client";
+import type { ConnectionTestResult, Host, Workspace } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { StatusLabel } from "../../shared/components/StatusLabel";
 import { boxClass, boxHeaderClass, dangerButton, secondaryButton } from "../../shared/components/styles";
 import { formatTimeAgo } from "../../shared/format";
 import { HostChecklist, summarizeCheck } from "./HostChecklist";
 import { TemplateSection } from "./TemplateGuide";
+import { hostsApi } from "./hosts-api";
 
 function summarizeWorkspaces(workspaces: Workspace[]): string {
   if (workspaces.length === 0) return "No workspaces yet. Remove is allowed.";
@@ -26,7 +27,7 @@ export function HostCard({
   workspacesError: string | undefined;
   onChanged: () => void;
 }) {
-  const [testResult, setTestResult] = useState<HostTestResult>();
+  const [testResult, setTestResult] = useState<ConnectionTestResult>();
   const [isTesting, setIsTesting] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
@@ -40,7 +41,7 @@ export function HostCard({
     try {
       await action();
     } catch (caught) {
-      setActionError({ title, message: errorMessage(caught) });
+      setActionError({ title, message: toErrorMessage(caught) });
     } finally {
       setBusy(false);
     }
@@ -50,7 +51,7 @@ export function HostCard({
     runAction(
       `Could not reach ${host.baseUrl}`,
       async () => {
-        setTestResult(await api.testHost(host.id));
+        setTestResult(await hostsApi.testConnection(host.id));
       },
       setIsTesting,
     );
@@ -58,7 +59,7 @@ export function HostCard({
     runAction(
       "Checks did not run",
       async () => {
-        await api.checkHost(host.id);
+        await hostsApi.checkSavedHost(host.id);
         onChanged();
       },
       setIsChecking,
@@ -67,7 +68,7 @@ export function HostCard({
     runAction(
       `Could not start preparing ${host.name}`,
       async () => {
-        await api.prepareHost(host.id);
+        await hostsApi.prepare(host.id);
         onChanged();
       },
       setIsStartingPrepare,
@@ -77,7 +78,7 @@ export function HostCard({
       `Could not remove ${host.name}`,
       async () => {
         setIsConfirmingRemove(false);
-        await api.deleteHost(host.id);
+        await hostsApi.delete(host.id);
         onChanged();
       },
       setIsRemoving,

@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from "react";
-import { api, errorMessage, findHostCheck } from "../../shared/api-client";
-import type { HostCheck, NewHost } from "../../shared/api-types";
+import { toErrorMessage } from "../../shared/api-client";
+import type { CreateHostInput, HostCheck } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { Field } from "../../shared/components/Field";
 import { StatusLabel } from "../../shared/components/StatusLabel";
 import { boxClass, boxHeaderClass, inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
 import { HostChecklist, summarizeCheck } from "./HostChecklist";
+import { findHostCheck, hostsApi } from "./hosts-api";
 
 type HostForm = {
   name: string;
@@ -52,7 +53,7 @@ export function AddHostForm({ onAdded }: { onAdded: () => void }) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  function toNewHost(): NewHost {
+  function toCreateHostInput(): CreateHostInput {
     return {
       name: form.name.trim(),
       baseUrl: form.baseUrl.trim(),
@@ -73,10 +74,10 @@ export function AddHostForm({ onAdded }: { onAdded: () => void }) {
     setSubmitError(undefined);
     setCheckResult(undefined);
     try {
-      const { name: _name, ...host } = toNewHost();
-      setCheckResult(await api.checkNewHost(host));
+      const { name: _name, ...host } = toCreateHostInput();
+      setCheckResult(await hostsApi.checkUnsavedHost(host));
     } catch (caught) {
-      setSubmitError({ baseUrl: form.baseUrl.trim(), message: errorMessage(caught) });
+      setSubmitError({ baseUrl: form.baseUrl.trim(), message: toErrorMessage(caught) });
     } finally {
       setSending(undefined);
     }
@@ -91,11 +92,11 @@ export function AddHostForm({ onAdded }: { onAdded: () => void }) {
     setSubmitError(undefined);
     setCheckResult(undefined);
     try {
-      await api.createHost(toNewHost());
+      await hostsApi.create(toCreateHostInput());
       setForm(emptyHostForm);
       onAdded();
     } catch (caught) {
-      setSubmitError({ baseUrl: form.baseUrl.trim(), message: errorMessage(caught) });
+      setSubmitError({ baseUrl: form.baseUrl.trim(), message: toErrorMessage(caught) });
       setCheckResult(findHostCheck(caught));
     } finally {
       setSending(undefined);

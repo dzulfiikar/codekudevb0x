@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../shared/api-client";
 import type { Event, ProjectStatus, Workspace, WorkspaceStatus } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { LoadingText } from "../../shared/components/LoadingText";
@@ -11,11 +10,12 @@ import { isSettingUp } from "../projects/project-status";
 import { EventLog, type StreamState } from "./EventLog";
 import { VmPanel } from "./VmPanel";
 import { WorkspaceHeader } from "./WorkspaceHeader";
+import { workspacesApi } from "./workspaces-api";
 
 const vmSelection = "vm";
 
 export function WorkspaceDetailPage({ workspaceId }: { workspaceId: string }) {
-  const workspaceResource = useResource(() => api.getWorkspace(workspaceId), workspaceId);
+  const workspaceResource = useResource(() => workspacesApi.get(workspaceId), workspaceId);
   const [workspace, setWorkspace] = useState<Workspace>();
   const [events, setEvents] = useState<Event[]>([]);
   const [streamState, setStreamState] = useState<StreamState>("connecting");
@@ -36,7 +36,7 @@ export function WorkspaceDetailPage({ workspaceId }: { workspaceId: string }) {
   }, [workspace]);
 
   useEffect(() => {
-    const source = new EventSource(api.eventsUrl(workspaceId));
+    const source = new EventSource(workspacesApi.eventsUrl(workspaceId));
     const seenIds = seenEventIds.current;
     let reloadTimer: number | undefined;
     setStreamState("connecting");

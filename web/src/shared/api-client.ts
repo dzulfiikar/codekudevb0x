@@ -1,6 +1,4 @@
-import type { Host, HostCheck, HostTestResult, KeyTestResult, NewHost, NewWorkspace, Project, Settings, SettingsUpdate, Workspace } from "./api-types";
-
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     message: string,
     readonly body: unknown,
@@ -9,7 +7,7 @@ class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
     ...init,
     headers: init?.body ? { "Content-Type": "application/json" } : undefined,
@@ -39,37 +37,11 @@ async function readError(response: Response): Promise<ApiError> {
   return new ApiError(fallback, body);
 }
 
-export function findHostCheck(error: unknown): HostCheck | undefined {
-  if (!(error instanceof ApiError) || !error.body || typeof error.body !== "object") return undefined;
-  const { check } = error.body as { check?: HostCheck };
-  return check && Array.isArray(check.checks) ? check : undefined;
-}
-
-function post<T>(path: string, body?: unknown): Promise<T> {
+export function post<T>(path: string, body?: unknown): Promise<T> {
   return request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
 }
 
-export const api = {
-  listHosts: () => request<Host[]>("/hosts"),
-  createHost: (host: NewHost) => post<Host>("/hosts", host),
-  deleteHost: (id: string) => request<void>(`/hosts/${id}`, { method: "DELETE" }),
-  testHost: (id: string) => post<HostTestResult>(`/hosts/${id}/test`),
-  checkNewHost: (host: Omit<NewHost, "name">) => post<HostCheck>("/hosts/check", host),
-  checkHost: (id: string) => post<HostCheck>(`/hosts/${id}/check`),
-  prepareHost: (id: string) => post<void>(`/hosts/${id}/prepare`),
-  listWorkspaces: () => request<Workspace[]>("/workspaces"),
-  getWorkspace: (id: string) => request<Workspace>(`/workspaces/${id}`),
-  createWorkspace: (workspace: NewWorkspace) => post<Workspace>("/workspaces", workspace),
-  deleteWorkspace: (id: string) => request<void>(`/workspaces/${id}`, { method: "DELETE" }),
-  addProject: (workspaceId: string, project: { repoUrl: string; name?: string }) =>
-    post<Project>(`/workspaces/${workspaceId}/projects`, project),
-  getSettings: () => request<Settings>("/settings"),
-  updateSettings: (settings: SettingsUpdate) => request<Settings>("/settings", { method: "PUT", body: JSON.stringify(settings) }),
-  testGeminiKey: (geminiApiKey?: string) => post<KeyTestResult>("/settings/test", geminiApiKey ? { geminiApiKey } : undefined),
-  eventsUrl: (workspaceId: string) => `/api/workspaces/${workspaceId}/events`,
-};
-
-export function errorMessage(error: unknown): string {
+export function toErrorMessage(error: unknown): string {
   if (error instanceof TypeError) return "Could not reach the app server on port 8787. Check that it is running.";
   return error instanceof Error ? error.message : String(error);
 }

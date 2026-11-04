@@ -7,3 +7,4 @@ export const inputClass =
   "focus-ring w-full rounded-md border border-line bg-bg px-3 py-[5px] leading-5 font-mono text-sm text-text placeholder:text-muted aria-invalid:border-danger focus-visible:border-accent";
 export const boxClass = "overflow-hidden rounded-md border border-line";
 export const boxHeaderClass = "flex items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3";
+export const selectClass = `${inputClass} select-chevron`;

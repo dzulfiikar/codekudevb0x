@@ -1,17 +1,18 @@
 import { InfoIcon, XIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { api, errorMessage } from "../../shared/api-client";
+import { toErrorMessage } from "../../shared/api-client";
 import type { Project, Workspace } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { Field } from "../../shared/components/Field";
 import { inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
-import { repoUrlPattern, workspaceNamePattern } from "../../shared/patterns";
+import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns";
 import { isSettingUp } from "./project-status";
+import { projectsApi } from "./projects-api";
 
 type ProjectFormErrors = { repoUrl?: string; name?: string };
 
 function nameFromRepoUrl(repoUrl: string): string | undefined {
-  return repoUrlPattern.exec(repoUrl.trim())?.[2]?.toLowerCase();
+  return githubRepositoryUrlPattern.exec(repoUrl.trim())?.[2]?.toLowerCase();
 }
 
 export function AddProjectDialog({
@@ -57,8 +58,8 @@ export function AddProjectDialog({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const errors: ProjectFormErrors = {};
-    if (!repoUrlPattern.test(repoUrl.trim())) errors.repoUrl = "Enter the full repository URL, like https://github.com/owner/repo";
-    if (projectName && !workspaceNamePattern.test(projectName)) {
+    if (!githubRepositoryUrlPattern.test(repoUrl.trim())) errors.repoUrl = "Enter the full repository URL, like https://github.com/owner/repo";
+    if (projectName && !resourceNamePattern.test(projectName)) {
       errors.name = "Use 1 to 40 lowercase letters, numbers and dashes, starting with a letter or number.";
     } else if (projectName && workspace.projects.some((project) => project.name === projectName)) {
       errors.name = `${projectName} already exists in this workspace. Pick another name.`;
@@ -71,11 +72,11 @@ export function AddProjectDialog({
     setIsSending(true);
     setSubmitError(undefined);
     try {
-      const project = await api.addProject(workspace.id, { repoUrl: repoUrl.trim(), name: name.trim() || undefined });
+      const project = await projectsApi.create(workspace.id, { repoUrl: repoUrl.trim(), name: name.trim() || undefined });
       onAdded(project);
       onClose();
     } catch (caught) {
-      setSubmitError(errorMessage(caught));
+      setSubmitError(toErrorMessage(caught));
     } finally {
       setIsSending(false);
     }

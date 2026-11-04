@@ -1,16 +1,16 @@
 import { HardDrivesIcon } from "@phosphor-icons/react";
 import { useEffect } from "react";
-import { api } from "../../shared/api-client";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { LoadingText } from "../../shared/components/LoadingText";
 import { useResource } from "../../shared/use-resource";
 import { AddHostForm } from "./AddHostForm";
 import { HostCard } from "./HostCard";
 import { useHosts } from "./HostsContext";
+import { workspacesApi } from "../workspaces/workspaces-api";
 
 export function HostsPage() {
   const hosts = useHosts();
-  const workspaces = useResource(api.listWorkspaces, "workspaces");
+  const workspaces = useResource(workspacesApi.list, "workspaces");
   const isPreparing = hosts.data?.some((host) => host.templateStatus === "preparing") ?? false;
   const reloadHosts = hosts.reload;
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { errorMessage } from "./api-client";
+import { toErrorMessage } from "./api-client";
 
 export type Resource<T> = {
   data: T | undefined;
@@ -20,7 +20,7 @@ export function useResource<T>(load: () => Promise<T>, key: string): Resource<T>
       setData(await loadRef.current());
       setError(undefined);
     } catch (caught) {
-      setError(errorMessage(caught));
+      setError(toErrorMessage(caught));
     } finally {
       setIsLoading(false);
     }

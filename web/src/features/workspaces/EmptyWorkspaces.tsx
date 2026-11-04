@@ -1,23 +1,23 @@
 import { CheckCircleIcon, CircleDashedIcon, PlusIcon, StackIcon } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
-import { api } from "../../shared/api-client";
 import { ErrorBox } from "../../shared/components/ErrorBox";
+import { PageLayout } from "../../shared/components/PageLayout";
 import { primaryButton, secondaryButton } from "../../shared/components/styles";
 import { Link } from "../../shared/router";
 import { useResource } from "../../shared/use-resource";
 import { useHosts } from "../hosts/HostsContext";
-import { Page } from "./WorkspacesPage";
+import { settingsApi } from "../settings/settings-api";
 
 export function EmptyWorkspaces() {
   const hosts = useHosts();
-  const settings = useResource(api.getSettings, "settings");
+  const settings = useResource(settingsApi.get, "settings");
   const hostList = hosts.data ?? [];
   const readyHost = hostList.find((host) => host.templateStatus === "ready");
   const hasKey = settings.data?.geminiApiKeySource === "database";
   const canCreate = readyHost !== undefined && hasKey;
 
   return (
-    <Page>
+    <PageLayout title="Workspaces">
       {hosts.error && !hosts.data && <ErrorBox title="Could not load Proxmox hosts">{hosts.error}</ErrorBox>}
       <section className="flex flex-col items-center rounded-md border border-line px-6 py-10 text-center">
         <StackIcon size={32} className="text-muted" aria-hidden="true" />
@@ -66,7 +66,7 @@ export function EmptyWorkspaces() {
           </>
         )}
       </section>
-    </Page>
+    </PageLayout>
   );
 }
 

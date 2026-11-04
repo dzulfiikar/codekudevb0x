@@ -1,9 +1,9 @@
 import { DesktopTowerIcon, FunnelIcon, MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
-import { useEffect, useState, type ReactNode } from "react";
-import { api } from "../../shared/api-client";
+import { useEffect, useState } from "react";
 import type { Workspace } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { LoadingText } from "../../shared/components/LoadingText";
+import { PageLayout } from "../../shared/components/PageLayout";
 import { StatusLabel } from "../../shared/components/StatusLabel";
 import { boxClass, boxHeaderClass, primaryButton, secondaryButton } from "../../shared/components/styles";
 import { Link } from "../../shared/router";
@@ -12,6 +12,7 @@ import { useHosts } from "../hosts/HostsContext";
 import { isSettingUp, projectStatusLabel } from "../projects/project-status";
 import { EmptyWorkspaces } from "./EmptyWorkspaces";
 import { workspaceLabel, workspaceStatusLabel, workspaceSummary } from "./workspace-status";
+import { workspacesApi } from "./workspaces-api";
 
 type StatusFilter = "all" | "running" | "setting-up" | "failed";
 
@@ -38,7 +39,7 @@ function matchesQuery(workspace: Workspace, query: string): boolean {
 }
 
 export function WorkspacesPage() {
-  const workspaces = useResource(api.listWorkspaces, "workspaces");
+  const workspaces = useResource(workspacesApi.list, "workspaces");
   const hosts = useHosts();
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -51,22 +52,22 @@ export function WorkspacesPage() {
 
   if (workspaces.isLoading || hosts.isLoading) {
     return (
-      <Page>
+      <PageLayout title="Workspaces">
         <LoadingText>Loading workspaces</LoadingText>
-      </Page>
+      </PageLayout>
     );
   }
 
   if (workspaces.error && !workspaces.data) {
     return (
-      <Page>
+      <PageLayout title="Workspaces">
         <ErrorBox title="Could not load workspaces">
           {workspaces.error}{" "}
           <button type="button" onClick={() => void reload()} className="focus-ring cursor-pointer rounded-sm bg-transparent p-0 font-semibold text-accent">
             Try again
           </button>
         </ErrorBox>
-      </Page>
+      </PageLayout>
     );
   }
 
@@ -79,7 +80,8 @@ export function WorkspacesPage() {
     .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   return (
-    <Page
+    <PageLayout
+      title="Workspaces"
       description="One VM per workspace. Projects run in dev mode with hot reload."
       action={
         <Link href="/workspaces/new" className={`${primaryButton} no-underline`}>
@@ -147,22 +149,7 @@ export function WorkspacesPage() {
           </ul>
         )}
       </section>
-    </Page>
-  );
-}
-
-export function Page({ description, action, children }: { description?: string; action?: ReactNode; children: ReactNode }) {
-  return (
-    <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-10 pt-6 pb-10">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="m-0 text-2xl font-semibold">Workspaces</h1>
-          {description && <p className="mt-1 mb-0 text-sm text-muted">{description}</p>}
-        </div>
-        {action && <div className="pt-2">{action}</div>}
-      </div>
-      {children}
-    </div>
+    </PageLayout>
   );
 }
 

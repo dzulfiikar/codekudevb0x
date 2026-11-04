@@ -1,14 +1,16 @@
 import { useState, type FormEvent } from "react";
-import { api, errorMessage } from "../../shared/api-client";
+import { toErrorMessage } from "../../shared/api-client";
 import type { AgentCli } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { Field, FormSection } from "../../shared/components/Field";
 import { LoadingText } from "../../shared/components/LoadingText";
-import { inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
-import { repoUrlPattern, workspaceNamePattern } from "../../shared/patterns";
+import { inputClass, primaryButton, secondaryButton, selectClass } from "../../shared/components/styles";
+import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns";
 import { Link, navigate } from "../../shared/router";
 import { useResource } from "../../shared/use-resource";
 import { useHosts } from "../hosts/HostsContext";
+import { settingsApi } from "../settings/settings-api";
+import { workspacesApi } from "./workspaces-api";
 
 const coreOptions = [1, 2, 4, 6, 8];
 const memoryOptions = [2048, 4096, 8192, 16384];
@@ -36,11 +38,11 @@ type WorkspaceFormErrors = Partial<Record<"hostId" | "name" | "firstProjectRepoU
 function validateWorkspace(form: WorkspaceForm): WorkspaceFormErrors {
   const errors: WorkspaceFormErrors = {};
   if (!form.hostId) errors.hostId = "No host has a ready template yet. Prepare one on the Hosts page first.";
-  if (!workspaceNamePattern.test(form.name)) {
+  if (!resourceNamePattern.test(form.name)) {
     errors.name = "Use 1 to 40 lowercase letters, numbers and dashes, starting with a letter or number.";
   }
   const repoUrl = form.firstProjectRepoUrl.trim();
-  if (repoUrl && !repoUrlPattern.test(repoUrl)) {
+  if (repoUrl && !githubRepositoryUrlPattern.test(repoUrl)) {
     errors.firstProjectRepoUrl = "Enter the full repository URL, like https://github.com/owner/repo";
   }
   if (!form.sshPublicKey.trim().startsWith("ssh-")) {
@@ -49,11 +51,9 @@ function validateWorkspace(form: WorkspaceForm): WorkspaceFormErrors {
   return errors;
 }
 
-const selectClass = `${inputClass} select-chevron font-sans`;
-
 export function NewWorkspacePage() {
   const hosts = useHosts();
-  const settings = useResource(api.getSettings, "settings");
+  const settings = useResource(settingsApi.get, "settings");
   const hostList = hosts.data ?? [];
   const [form, setForm] = useState<WorkspaceForm>({
     hostId: "",
@@ -98,7 +98,7 @@ export function NewWorkspacePage() {
     setIsSending(true);
     setSubmitError(undefined);
     try {
-      const workspace = await api.createWorkspace({
+      const workspace = await workspacesApi.create({
         hostId: submitted.hostId,
         name: submitted.name,
         githubToken: submitted.githubToken.trim() || undefined,
@@ -111,7 +111,7 @@ export function NewWorkspacePage() {
       });
       navigate(`/workspaces/${encodeURIComponent(workspace.id)}`);
     } catch (caught) {
-      setSubmitError(errorMessage(caught));
+      setSubmitError(toErrorMessage(caught));
       setIsSending(false);
     }
   }
@@ -164,7 +164,7 @@ export function NewWorkspacePage() {
                 }
               >
                 {(props) => (
-                  <select {...props} className={selectClass} value={hostId} onChange={(event) => update("hostId", event.target.value)}>
+                  <select {...props} className={`${selectClass} font-sans`} value={hostId} onChange={(event) => update("hostId", event.target.value)}>
                     {readyHosts.length === 0 && (
                       <option value="" disabled>
                         No host has a ready template
@@ -285,7 +285,7 @@ export function NewWorkspacePage() {
               <div className="grid grid-cols-3 gap-4">
                 <Field id="workspace-cores" label="vCPU">
                   {(props) => (
-                    <select {...props} className={selectClass} value={form.cores} onChange={(event) => update("cores", Number(event.target.value))}>
+                    <select {...props} className={`${selectClass} font-sans`} value={form.cores} onChange={(event) => update("cores", Number(event.target.value))}>
                       {coreOptions.map((cores) => (
                         <option key={cores} value={cores}>
                           {cores}
@@ -296,7 +296,7 @@ export function NewWorkspacePage() {
                 </Field>
                 <Field id="workspace-memoryMb" label="RAM">
                   {(props) => (
-                    <select {...props} className={selectClass} value={form.memoryMb} onChange={(event) => update("memoryMb", Number(event.target.value))}>
+                    <select {...props} className={`${selectClass} font-sans`} value={form.memoryMb} onChange={(event) => update("memoryMb", Number(event.target.value))}>
                       {memoryOptions.map((memoryMb) => (
                         <option key={memoryMb} value={memoryMb}>
                           {memoryMb / 1024} GB
@@ -307,7 +307,7 @@ export function NewWorkspacePage() {
                 </Field>
                 <Field id="workspace-diskGb" label="Disk">
                   {(props) => (
-                    <select {...props} className={selectClass} value={form.diskGb} onChange={(event) => update("diskGb", Number(event.target.value))}>
+                    <select {...props} className={`${selectClass} font-sans`} value={form.diskGb} onChange={(event) => update("diskGb", Number(event.target.value))}>
                       {diskOptions.map((diskGb) => (
                         <option key={diskGb} value={diskGb}>
                           {diskGb} GB

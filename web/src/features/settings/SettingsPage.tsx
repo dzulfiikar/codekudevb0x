@@ -1,25 +1,27 @@
 import { CheckCircleIcon, KeyIcon, PlugsConnectedIcon, TrashIcon } from "@phosphor-icons/react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { api, errorMessage } from "../../shared/api-client";
-import type { KeyTestResult, SettingsUpdate } from "../../shared/api-types";
+import { toErrorMessage } from "../../shared/api-client";
+import type { GeminiApiKeyTestResult, SettingsInput } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
 import { Field } from "../../shared/components/Field";
 import { LoadingText } from "../../shared/components/LoadingText";
+import { PageLayout } from "../../shared/components/PageLayout";
 import { StatusLabel } from "../../shared/components/StatusLabel";
-import { boxClass, boxHeaderClass, dangerButton, inputClass, primaryButton, secondaryButton } from "../../shared/components/styles";
+import { boxClass, boxHeaderClass, dangerButton, inputClass, primaryButton, secondaryButton, selectClass } from "../../shared/components/styles";
 import { useResource } from "../../shared/use-resource";
+import { settingsApi } from "./settings-api";
 
-const selectClass = `${inputClass} select-chevron`;
+const pageDescription = "Gemini key and models for the setup agent. Changes apply to the next project.";
 
 type SaveState = { kind: "idle" } | { kind: "saving" } | { kind: "saved"; message: string } | { kind: "failed"; message: string };
 
 export function SettingsPage() {
-  const settings = useResource(api.getSettings, "settings");
+  const settings = useResource(settingsApi.get, "settings");
   const [geminiApiKey, setGeminiApiKey] = useState("");
   const [primaryModel, setPrimaryModel] = useState("");
   const [fallbackModel, setFallbackModel] = useState("");
   const [fallbackError, setFallbackError] = useState<string>();
-  const [testResult, setTestResult] = useState<KeyTestResult>();
+  const [testResult, setTestResult] = useState<GeminiApiKeyTestResult>();
   const [isTesting, setIsTesting] = useState(false);
   const [keyState, setKeyState] = useState<SaveState>({ kind: "idle" });
   const [modelState, setModelState] = useState<SaveState>({ kind: "idle" });
@@ -34,22 +36,22 @@ export function SettingsPage() {
 
   if (settings.isLoading) {
     return (
-      <Page>
+      <PageLayout title="Settings" description={pageDescription}>
         <LoadingText>Loading settings</LoadingText>
-      </Page>
+      </PageLayout>
     );
   }
 
   if (!loaded) {
     return (
-      <Page>
+      <PageLayout title="Settings" description={pageDescription}>
         <ErrorBox title="Could not load settings">
           {settings.error}{" "}
           <button type="button" onClick={() => void settings.reload()} className="focus-ring cursor-pointer rounded-sm bg-transparent p-0 font-semibold text-accent">
             Try again
           </button>
         </ErrorBox>
-      </Page>
+      </PageLayout>
     );
   }
 
@@ -59,14 +61,14 @@ export function SettingsPage() {
   const hasKey = loaded.geminiApiKeySource === "database";
   const typedKey = geminiApiKey.trim();
 
-  async function save(update: SettingsUpdate, setState: (state: SaveState) => void, savedMessage: string) {
+  async function save(update: SettingsInput, setState: (state: SaveState) => void, savedMessage: string) {
     setState({ kind: "saving" });
     try {
-      await api.updateSettings(update);
+      await settingsApi.save(update);
       await settings.reload();
       setState({ kind: "saved", message: savedMessage });
     } catch (caught) {
-      setState({ kind: "failed", message: errorMessage(caught) });
+      setState({ kind: "failed", message: toErrorMessage(caught) });
     }
   }
 
@@ -74,9 +76,9 @@ export function SettingsPage() {
     setIsTesting(true);
     setTestResult(undefined);
     try {
-      setTestResult(await api.testGeminiKey(typedKey || undefined));
+      setTestResult(await settingsApi.testGeminiApiKey(typedKey || undefined));
     } catch (caught) {
-      setTestResult({ ok: false, message: errorMessage(caught) });
+      setTestResult({ ok: false, message: toErrorMessage(caught) });
     } finally {
       setIsTesting(false);
     }
@@ -113,7 +115,7 @@ export function SettingsPage() {
   }
 
   return (
-    <Page>
+    <PageLayout title="Settings" description={pageDescription}>
       <div className="grid grid-cols-2 items-start gap-6">
         <section className={boxClass} aria-labelledby="key-title">
           <div className={boxHeaderClass}>
@@ -284,7 +286,7 @@ export function SettingsPage() {
           <p className="m-0 text-sm text-muted">On the free tier, most setup time is waiting for the per-minute limit to reset.</p>
         </div>
       </section>
-    </Page>
+    </PageLayout>
   );
 }
 
@@ -294,17 +296,5 @@ function Notice({ children }: { children: ReactNode }) {
       <CheckCircleIcon size={16} className="text-success" aria-hidden="true" />
       {children}
     </p>
-  );
-}
-
-function Page({ children }: { children: ReactNode }) {
-  return (
-    <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-10 pt-6 pb-10">
-      <div>
-        <h1 className="m-0 text-2xl font-semibold">Settings</h1>
-        <p className="mt-1 mb-0 text-sm text-muted">Gemini key and models for the setup agent. Changes apply to the next project.</p>
-      </div>
-      {children}
-    </div>
   );
 }
