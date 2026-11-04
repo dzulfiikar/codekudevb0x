@@ -7,14 +7,16 @@ import { Link } from "../../shared/router";
 import { useResource } from "../../shared/use-resource";
 import { useHosts } from "../hosts/HostsContext";
 import { settingsApi } from "../settings/settings-api";
+import { hasSetupAgentCredential } from "../settings/settings-status";
 
 export function EmptyWorkspaces() {
   const hosts = useHosts();
   const settings = useResource(settingsApi.get, "settings");
   const hostList = hosts.data ?? [];
   const readyHost = hostList.find((host) => host.templateStatus === "ready");
-  const hasKey = settings.data?.geminiApiKeySource === "database";
-  const canCreate = readyHost !== undefined && hasKey;
+  const hasCredential = settings.data !== undefined && hasSetupAgentCredential(settings.data);
+  const isClaudeSelected = settings.data?.agentProvider === "claude";
+  const canCreate = readyHost !== undefined && hasCredential;
 
   return (
     <PageLayout title="Workspaces">
@@ -43,10 +45,10 @@ export function EmptyWorkspaces() {
             action={hostList.length > 0 && !readyHost && <SetupLink href="/hosts">Prepare host</SetupLink>}
           />
           <SetupItem
-            isDone={hasKey}
-            title="Gemini API key"
-            detail={settings.isLoading ? "Checking" : settings.error ? "Could not check" : hasKey ? "Saved" : "Not set"}
-            action={!hasKey && <SetupLink href="/settings">Open Settings</SetupLink>}
+            isDone={hasCredential}
+            title={isClaudeSelected ? "Claude sign-in" : "Gemini API key"}
+            detail={settings.isLoading ? "Checking" : settings.error ? "Could not check" : hasCredential ? (isClaudeSelected ? "Connected" : "Saved") : "Not set"}
+            action={!hasCredential && <SetupLink href="/settings">Open Settings</SetupLink>}
           />
         </ul>
         {canCreate ? (
@@ -61,7 +63,7 @@ export function EmptyWorkspaces() {
               New workspace
             </button>
             <p id="new-workspace-hint" className="mt-3 mb-0 text-xs text-muted">
-              Available once the template and key are ready.
+              Available once the template is ready and the setup agent can sign in.
             </p>
           </>
         )}

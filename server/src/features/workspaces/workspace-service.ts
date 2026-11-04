@@ -14,7 +14,9 @@ type CreateWorkspaceInput = {
   hostId: string;
   name: string;
   githubToken?: string;
-  sshPublicKey: string;
+  username: string;
+  sshPublicKey?: string;
+  password?: string;
   agentClis: string[];
   cores: number;
   memoryMb: number;
@@ -27,12 +29,23 @@ const agentCliInstallCommands: Record<string, string> = {
   claude: "curl -fsSL https://claude.ai/install.sh | bash",
   antigravity: "curl -fsSL https://antigravity.google/cli/install.sh | bash",
 };
-const requiredSetupCommands = [
-  "curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs",
-  "install -d -o dev -g dev /home/dev/projects",
-  "install -d -m 700 -o dev -g dev /home/dev/.ssh && ssh-keyscan github.com >> /home/dev/.ssh/known_hosts && chown dev:dev /home/dev/.ssh/known_hosts",
-  `grep -q '.local/bin' /home/dev/.bashrc || echo 'export PATH="$HOME/.local/bin:$PATH"' >> /home/dev/.bashrc`,
-];
+const reservedUsernames = new Set([
+  "root", "ubuntu", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp", "proxy",
+  "www-data", "backup", "list", "irc", "gnats", "nobody", "systemd-network", "systemd-resolve",
+  "systemd-timesync", "messagebus", "syslog", "sshd", "docker", "admin", "sudo", "lxd", "polkitd", "_apt",
+  "tss", "uuidd", "tcpdump", "landscape", "fwupd-refresh", "pollinate", "usbmux", "dnsmasq",
+]);
+
+function requiredSetupCommands(username: string) {
+  const user = quoteForShell(username);
+  const home = quoteForShell(`/home/${username}`);
+  return [
+    "curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs",
+    `install -d -o ${user} -g ${user} ${home}/projects`,
+    `install -d -m 700 -o ${user} -g ${user} ${home}/.ssh && ssh-keyscan github.com >> ${home}/.ssh/known_hosts && chown ${user}:${user} ${home}/.ssh/known_hosts`,
+    `grep -q '.local/bin' ${home}/.bashrc || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ${home}/.bashrc`,
+  ];
+}
 const isoStorage = "local";
 const seedIsoFilename = (vmid: number) => `workspace-${vmid}-seed.iso`;
 
@@ -49,6 +62,9 @@ function toWorkspaceResponse(record: WorkspaceRecord, projects: Project[]): Work
     memoryMb: record.memoryMb,
     diskGb: record.diskGb,
     hasGithubToken: record.githubToken !== null,
+    username: record.username,
+    hasSshKey: record.sshPublicKey !== null,
+    hasPassword: record.hasPassword,
     error: record.error,
     projects,
     createdAt: record.createdAt,
@@ -80,7 +96,11 @@ class WorkspaceService {
   }
 
   async create(input: CreateWorkspaceInput) {
-    const { firstProjectRepoUrl, githubToken, ...fields } = input;
+    const { firstProjectRepoUrl, githubToken, sshPublicKey, password, ...fields } = input;
+    if (reservedUsernames.has(fields.username)) {
+      throw new InvalidInputError("That username is taken by the system. Pick another one.");
+    }
+    if (!sshPublicKey && !password) throw new InvalidInputError("Add an SSH public key, a password, or both.");
     const host = await hostService.findHostRecord(fields.hostId);
     if (!host) throw new InvalidInputError("Host not found. Add a Proxmox host first.");
     if (host.templateStatus !== "ready") {
@@ -93,10 +113,12 @@ class WorkspaceService {
       ip: null,
       status: "cloning_vm",
       githubToken: githubToken ? encrypt(githubToken) : null,
+      sshPublicKey: sshPublicKey ?? null,
+      hasPassword: password !== undefined,
       error: null,
       createdAt: new Date().toISOString(),
     });
-    void this.runSetup(record.id, firstProjectRepoUrl);
+    void this.runSetup(record.id, firstProjectRepoUrl, password);
     return toWorkspaceResponse(record, await projectService.listByWorkspace(record.id));
   }
 
@@ -130,7 +152,8 @@ class WorkspaceService {
     return eventService.record(workspaceId, null, { type: "log", message });
   }
 
-  private async runSetup(workspaceId: string, firstProjectRepoUrl?: string) {
+  private async runSetup(workspaceId: string, firstProjectRepoUrl?: string, password?: string) {
+    const redactPassword = (text: string) => (password ? text.replaceAll(password, "***") : text);
     try {
       const workspace = await this.getRecord(workspaceId);
       const host = await hostService.findHostRecord(workspace.hostId);
@@ -147,7 +170,9 @@ class WorkspaceService {
       const seedIso = await buildSeedIso({
         instanceId: `workspace-${workspace.id}`,
         hostname: workspace.name,
+        username: workspace.username,
         sshPublicKey: workspace.sshPublicKey,
+        hasPassword: password !== undefined,
       });
       await proxmox.uploadIso(isoStorage, seedIsoFilename(vmid), seedIso);
       await this.log(workspaceId, "Prepared first-boot config");
@@ -177,20 +202,35 @@ class WorkspaceService {
         return result;
       };
       await runRecorded("cloud-init status --wait || true");
-      for (const command of requiredSetupCommands) {
+      const user = quoteForShell(workspace.username);
+      if (password) {
+        const chpasswdResult = await proxmox.runInGuest(vmid, ["chpasswd"], { input: `${workspace.username}:${password}\n` });
+        if (chpasswdResult.exitCode !== 0) {
+          throw new Error(`chpasswd failed: ${redactPassword(chpasswdResult.stderr).trim().slice(-500)}`);
+        }
+        await this.log(workspaceId, `Set the password for ${workspace.username}`);
+        // Ubuntu cloud images ship 60-cloudimg-settings.conf with PasswordAuthentication no; sshd keeps the first value it reads.
+        const allowPasswordSignIn = `printf 'PasswordAuthentication yes\\nKbdInteractiveAuthentication no\\n' > /etc/ssh/sshd_config.d/10-codekudevb0x.conf && systemctl try-reload-or-restart ssh`;
+        if ((await runRecorded(allowPasswordSignIn)).exitCode !== 0) {
+          throw new Error(`Setup command failed: ${allowPasswordSignIn}`);
+        }
+        const passwordStatus = await runRecorded(`passwd -S ${user}`);
+        if (passwordStatus.stdout.trim().split(/\s+/)[1] !== "P") throw new Error("Could not set the password inside the VM");
+      }
+      for (const command of requiredSetupCommands(workspace.username)) {
         const result = await runRecorded(command);
         if (result.exitCode !== 0) throw new Error(`Setup command failed: ${command}`);
       }
-      if ((await runRecorded("usermod -aG docker dev")).exitCode !== 0) {
+      if ((await runRecorded(`usermod -aG docker ${user}`)).exitCode !== 0) {
         await eventService.record(workspaceId, null, {
           type: "error",
-          message: "Could not add dev to the docker group. Is Docker installed in the template?",
+          message: `Could not add ${workspace.username} to the docker group. Is Docker installed in the template?`,
         });
       }
       for (const cli of workspace.agentClis) {
         const installCommand = agentCliInstallCommands[cli];
         if (!installCommand) continue;
-        const result = await runRecorded(`sudo -iu dev bash -lc ${quoteForShell(installCommand)}`);
+        const result = await runRecorded(`sudo -iu ${user} bash -lc ${quoteForShell(installCommand)}`);
         if (result.exitCode !== 0) {
           await eventService.record(workspaceId, null, { type: "error", message: `Installing ${cli} failed` });
         }
@@ -200,7 +240,7 @@ class WorkspaceService {
       if (firstProjectRepoUrl) await this.addFirstProject(workspaceId, firstProjectRepoUrl);
     } catch (error) {
       if (await workspaceRepository.findById(workspaceId)) {
-        await this.setStatus(workspaceId, "failed", toErrorMessage(error));
+        await this.setStatus(workspaceId, "failed", redactPassword(toErrorMessage(error)));
       }
     }
   }

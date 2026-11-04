@@ -7,6 +7,7 @@ import { projectService } from "./project-service.js";
 const createProjectBody = z.object({
   repoUrl: z.string().trim().regex(githubRepositoryUrlPattern, "Use https://github.com/OWNER/REPO"),
   name: optionalText,
+  instructions: z.string().optional(),
 });
 
 class ProjectController {

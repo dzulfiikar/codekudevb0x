@@ -4,7 +4,7 @@ import { settings } from "../../infrastructure/database/schema.js";
 
 const settingsRowId = 1;
 
-type SettingsValues = { geminiApiKey: string | null; primaryModel: string; fallbackModel: string | null };
+type SettingsValues = Required<Omit<typeof settings.$inferInsert, "id">>;
 
 class SettingsRepository {
   async find() {

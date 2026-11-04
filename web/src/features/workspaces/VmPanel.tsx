@@ -30,7 +30,7 @@ export function VmPanel({
 
   return (
     <aside className="flex flex-col gap-4" aria-label="VM">
-      {workspace.ip && <ConnectBox ip={workspace.ip} />}
+      {workspace.ip && <ConnectBox workspace={workspace} ip={workspace.ip} />}
       <SideBox title="About this VM">
         <dl className="m-0 flex flex-col gap-3">
           {facts.map(([label, value]) => (

@@ -42,7 +42,7 @@ Projects in one workspace are set up **one at a time** (a per-workspace queue) s
 ## Stack and layout
 
 - `server/`: Node 22+, TypeScript, Express 5, Zod, Drizzle ORM on PostgreSQL 17 (`pg`, `DATABASE_URL`), `@google/genai`, `undici` (per-host TLS dispatcher). Port `8787`.
-- `server/src` is grouped by feature: `features/{hosts,workspaces,projects,events,settings}/`. Each feature folder holds `*-routes.ts` (URL to handler map), `*-controller.ts` (Express handlers: parse the body with Zod, call the service, send the status code), `*-service.ts` (business rules, background jobs) and `*-repository.ts` (the only database access). Outside the features: `integrations/` (Proxmox, Gemini client, cloud-init ISO), `infrastructure/` (config, database, encryption, HTTP app) and `shared/` (API types, errors, small helpers). A feature may call another feature's service and read its repository; writes go through the owning service. Services throw `NotFoundError`/`ConflictError`/`InvalidInputError`; the HTTP app maps them to 404/409/400 `{ message }`.
+- `server/src` is grouped by feature: `features/{hosts,workspaces,projects,events,settings}/`. Each feature folder holds `*-routes.ts` (URL to handler map), `*-controller.ts` (Express handlers: parse the body with Zod, call the service, send the status code), `*-service.ts` (business rules, background jobs) and `*-repository.ts` (the only database access). Outside the features: `integrations/` (Proxmox, Gemini client, Claude Agent SDK client, cloud-init ISO), `infrastructure/` (config, database, encryption, HTTP app) and `shared/` (API types, errors, small helpers). A feature may call another feature's service and read its repository; writes go through the owning service. Services throw `NotFoundError`/`ConflictError`/`InvalidInputError`; the HTTP app maps them to 404/409/400 `{ message }`.
 - `web/`: Vite, React, TypeScript, Tailwind CSS v4. Dev proxy `/api` to `http://localhost:8787`. `web/src` has `features/{hosts,workspaces,projects,settings}/` (pages, their components and a `*-api.ts` client each) and `shared/` (fetch client, router, hooks, formatters, shared components). Web imports the API types from `server/src/shared/api-types.ts` with `import type` only, so the Docker web stage still builds from `web/` alone.
 - Two independent npm packages (no npm workspaces). Root `package.json` only has scripts:
   - `typecheck`: `npm --prefix server run typecheck && npm --prefix web run typecheck`
@@ -64,12 +64,14 @@ DELETE /api/hosts/:id                -> 204 (refuse with 409 if workspaces still
 POST   /api/hosts/:id/test           -> { ok: true, version } | { ok: false, message }
 POST   /api/hosts/:id/prepare        -> 202. Builds the template through the API (see "Prepare host"). Poll GET /api/hosts.
 
-POST   /api/workspaces               { hostId, name, githubToken?, sshPublicKey, agentClis: ("claude"|"antigravity")[],
+POST   /api/workspaces               { hostId, name, githubToken?, username="dev", sshPublicKey?, password?, agentClis: ("claude"|"antigravity")[],
                                        cores=2, memoryMb=4096, diskGb=20, firstProjectRepoUrl? } -> 202 Workspace
+                                     At least one of sshPublicKey and password. The password is set in the VM with chpasswd over
+                                     guest-agent stdin (plus an sshd drop-in allowing password sign-in) and never stored.
 GET    /api/workspaces               -> Workspace[]
 GET    /api/workspaces/:id           -> Workspace
 DELETE /api/workspaces/:id           -> 202 (stop + purge VM, then delete rows)
-POST   /api/workspaces/:id/projects  { repoUrl, name? } -> 202 Project (status "queued")
+POST   /api/workspaces/:id/projects  { repoUrl, name?, instructions? } -> 202 Project (status "queued")
 GET    /api/workspaces/:id/events    -> text/event-stream. Replays stored events, then streams new ones. Each message: data: <Event JSON>
 ```
 
@@ -122,7 +124,7 @@ Update `templateStatus`/`templateMessage` as it goes ("Downloading Ubuntu 24.04 
 
 1. `cloning_vm`: `GET /cluster/nextid`, `POST /nodes/{node}/qemu/{templateVmid}/clone` `{ newid, name, full: 0 }`, poll `GET /nodes/{node}/tasks/{upid}/status` until `status=stopped`; fail unless `exitstatus=OK`.
 2. `configuring_vm`: build a cloud-init NoCloud seed ISO (volume label `cidata`) with `user-data`, `meta-data` (`instance-id: workspace-<id>`, `local-hostname: <name>`) and `network-config` (v2, DHCP on every `e*` interface). Build it with `genisoimage -output seed.iso -volid cidata -joliet -rock user-data meta-data network-config` (install `genisoimage` in the Docker image); on macOS fall back to `hdiutil makehybrid -iso -joliet -default-volume-name cidata -o seed.iso <dir>`. Upload with `POST /nodes/{node}/storage/local/upload` (multipart: `content=iso`, `filename` = `workspace-<vmid>-seed.iso`). Then `POST /nodes/{node}/qemu/{vmid}/config` with `cores`, `memory`, `ide2=local:iso/workspace-<vmid>-seed.iso,media=cdrom`, `net0=virtio,bridge=<bridge>`, and `PUT .../resize` `{ disk: "scsi0", size: "<diskGb>G" }`.
-   user-data (`#cloud-config`): user `dev` (shell bash, `sudo: ALL=(ALL) NOPASSWD:ALL`, `ssh_authorized_keys: [<sshPublicKey>]`), `package_update: true`, `packages: [qemu-guest-agent, git, docker.io, docker-compose-v2, curl, ca-certificates]`, `runcmd: [systemctl enable --now qemu-guest-agent]`.
+   user-data (`#cloud-config`): the workspace user (`username`, default `dev`; every `dev` below means that user) (shell bash, `sudo: ALL=(ALL) NOPASSWD:ALL`, `ssh_authorized_keys: [<sshPublicKey>]` when given, `ssh_pwauth: true` with a password), `package_update: true`, `packages: [qemu-guest-agent, git, docker.io, docker-compose-v2, curl, ca-certificates]`, `runcmd: [systemctl enable --now qemu-guest-agent]`.
 3. `starting`: `POST .../status/start`, poll `GET .../agent/network-get-interfaces` every 5 s (it errors until cloud-init has installed the guest agent) until a non-loopback IPv4 appears. Timeout 300 s, error: "No IP after 5 min. Check the VM console in Proxmox for cloud-init errors."
 4. `installing_tools` (guest exec, as root): `cloud-init status --wait`, `usermod -aG docker dev`, `install -d -o dev -g dev /home/dev/projects`, `ssh-keyscan github.com >> /home/dev/.ssh/known_hosts` (owned by dev), then for each chosen CLI as `dev`:
    - claude: `sudo -iu dev bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'`
@@ -144,14 +146,16 @@ Delete: `POST .../status/stop` (ignore if already stopped), poll task, `DELETE /
 
 ## Agent loop (`server/src/features/projects/project-setup-agent.ts`, `server/src/integrations/gemini/gemini-client.ts`)
 
+- Settings pick the provider: Gemini (above files) or Claude (`features/projects/claude-setup-agent.ts` on `integrations/claude/claude-client.ts`, built-in tools off, only `run_command` and `report_services`). Both share the prompt and tool schemas in `features/projects/project-setup-instructions.ts`.
 - `@google/genai`: `new GoogleGenAI({ apiKey })` with the key and models read from settings when the session starts, `ai.models.generateContent({ model, contents, config: { systemInstruction, tools: [{ functionDeclarations }] } })`, read `response.functionCalls`, append the model turn and a `functionResponse` part per call, loop.
 - Tools:
   - `run_command({ command })`: guest exec `["bash", "-lc", command]` as root with cwd set via `cd /home/dev/projects/NAME &&`. Returns `{ exitCode, stdout, stderr }`, each truncated to the last 4000 chars. Per-command timeout 600 s (poll `agent/exec-status`).
   - `report_services({ services: [{ name, port }] })`: ends the loop.
 - Cap 25 tool calls. Emit an `agent` event for model text, a `command` event per run_command.
 - System instruction must state: Ubuntu 24.04, user `dev`, project path, Docker + Compose + git available, other runtimes must be installed by the agent (apt or official installers); run app processes **in dev/watch mode** (`npm run dev`, nodemon, vite, flask --debug, air, etc.) bound to `0.0.0.0`, as systemd units named `NAME-SERVICE.service` with `User=dev`, `WorkingDirectory=` the project path, `Restart=always`; databases and infrastructure may run with `docker compose` (publish to `0.0.0.0`); if the repo is compose-only, prefer `docker compose watch` or bind-mounted dev services; the list of ports already used in this VM (never use them); always end with `report_services`.
+- The system instruction is the editable agent prompt from Settings (placeholders `{projectName}`, `{projectPath}`, `{usedPorts}`, `{username}`), followed by the project's `instructions` when set.
 - If Gemma returns no function calls, nudge once ("Call a tool."), then fail.
-- `scripts/smoke-gemma.ts`: reads the key and primary model from the settings table (`DATABASE_URL`), makes one call with one function declaration, prints `functionCalls`. If it is empty, switch the loop to JSON output parsed with Zod.
+- `scripts/smoke-gemma.ts`: reads the key and primary model from the settings table (`DATABASE_URL`), makes one call with one function declaration, prints `functionCalls`. If it is empty, switch the loop to JSON output parsed with Zod. `scripts/smoke-claude.ts` does the same for the Claude agent.
 
 ## Proxmox client (`server/src/integrations/proxmox/proxmox-client.ts`)
 
@@ -162,11 +166,11 @@ Delete: `POST .../status/stop` (ignore if already stopped), poll task, `DELETE /
 
 ## Data (`server/src/infrastructure/database/schema.ts`)
 
-`hosts` (token secret encrypted), `workspaces` (GitHub token encrypted, ssh public key, agent CLIs JSON), `projects` (services JSON), `events` (serial id, workspaceId, projectId nullable, type, payload JSON, at), `settings` (single row id 1: Gemini key encrypted, primary model, fallback model). JSON columns are `jsonb`. Tables are created at startup with `CREATE TABLE IF NOT EXISTS`. `infrastructure/encryption.ts`: AES-256-GCM with `APP_SECRET`, random 12-byte IV, stored as `iv.tag.ciphertext` base64.
+`hosts` (token secret encrypted), `workspaces` (GitHub token encrypted, username, ssh public key nullable, has password, agent CLIs JSON), `projects` (services JSON, instructions), `events` (serial id, workspaceId, projectId nullable, type, payload JSON, at), `settings` (single row id 1: agent provider, Gemini key encrypted, primary model, fallback model, Claude credential encrypted, Claude primary/fallback model, agent prompt or null for the default). JSON columns are `jsonb`. Tables are created at startup with `CREATE TABLE IF NOT EXISTS`. `infrastructure/encryption.ts`: AES-256-GCM with `APP_SECRET`, random 12-byte IV, stored as `iv.tag.ciphertext` base64.
 
 ## UI (variant B, see `design/b/*.png`)
 
-Screens: Workspaces list (+ empty state), New workspace, Workspace detail (project cards, live agent log via SSE, Connect box with copyable `ssh -A dev@IP` and a VS Code link `vscode://vscode-remote/ssh-remote+dev@IP/home/dev/projects`), Add project dialog (Escape closes, focus returns to the trigger), Hosts (list + add form with connection error). Each host card shows its template status: "Template 9000 ready", or "Template 9000 missing" with a **Prepare host** button (POST /api/hosts/:id/prepare, then poll GET /api/hosts every 3 s while `preparing`, showing `templateMessage`), or the failure message with a Retry button. New workspace disables hosts whose template is not ready, with a hint to prepare them. The Add host form: name, API URL (placeholder `https://your-host.your-tailnet.ts.net`), token ID (`user@realm!token`), secret, node (optional, auto-detected), template VM ID (9000), bridge (vmbr0), and the self-signed checkbox (unchecked by default).
+Screens: Workspaces list (+ empty state), New workspace, Workspace detail (project cards, live agent log via SSE, Connect box with copyable `ssh -A <username>@IP` and a VS Code link `vscode://vscode-remote/ssh-remote+<username>@IP/home/<username>/projects`), Add project dialog (Escape closes, focus returns to the trigger), Hosts (list + add form with connection error). Each host card shows its template status: "Template 9000 ready", or "Template 9000 missing" with a **Prepare host** button (POST /api/hosts/:id/prepare, then poll GET /api/hosts every 3 s while `preparing`, showing `templateMessage`), or the failure message with a Retry button. New workspace disables hosts whose template is not ready, with a hint to prepare them. The Add host form: name, API URL (placeholder `https://your-host.your-tailnet.ts.net`), token ID (`user@realm!token`), secret, node (optional, auto-detected), template VM ID (9000), bridge (vmbr0), and the self-signed checkbox (unchecked by default).
 
 Tokens: bg `#141619`, surface `#1B1E22`, line `#2E3238` (inputs `#3A3F46`), text `#E7E4DD`, muted `#A0A6AD`, accent/up `#8FD694` (button text `#141619`), danger `#F08A7E`. Fonts: Atkinson Hyperlegible (UI), Source Code Pro (commands, ports, IDs). Radius 6 on panels and buttons, 4 on small controls.
 
@@ -190,18 +194,22 @@ PUT  /api/settings          { geminiApiKey?: string, primaryModel: string, fallb
                                Validates the models against the available list; 400 with a readable message otherwise.
 POST /api/settings/test     { geminiApiKey?: string } -> { ok: true, modelCount: number } | { ok: false, message: string }
                                Tests the given key (or the stored one) by listing models.
+POST /api/settings/test-claude { claudeCredential?: string } -> { ok: true, modelCount, subscriptionType, credentialKind } | { ok: false, message }
 
 Settings = {
   geminiApiKeySource: "database" | "none",
   geminiApiKeyHint: string | null,          // last 4 characters only, e.g. "…x7Qa"
   primaryModel: string,
   fallbackModel: string | null,
-  availableModels: { id: string; displayName: string }[]
+  availableModels: { id: string; displayName: string }[],
+  agentProvider, claudeCredentialKind, claudeCredentialHint, claudePrimaryModel, claudeFallbackModel, claudeAvailableModels,
+  agentPrompt, defaultAgentPrompt, isAgentPromptEdited
 }
 ```
 
 - `availableModels`: Gemini API `models.list` with the active key, filtered to ids containing `gemma`, sorted, cached 5 minutes. If there is no key or the call fails, return the two Gemma 4 ids (`gemma-4-26b-a4b-it`, `gemma-4-31b-it`).
 - The key is stored encrypted (same AES-256-GCM helper as tokens) and never returned.
+- PUT also takes `agentProvider`, `claudeCredential` (a `claude setup-token` plan token `sk-ant-oat…` or an Anthropic API key `sk-ant-api…`), `claudePrimaryModel`, `claudeFallbackModel` and `agentPrompt` (`null` resets to the default; unknown placeholders are a 400). Every field is optional.
 - The agent reads settings when a project's agent session starts, so a change applies to the next project without a restart.
 
 UI: a third nav item **Settings** at `/settings`. Sections: "Gemini API key" (password input, current source and hint, Test key button with result, Save, Remove stored key), "Models" (primary select and fallback select, fallback has a "None" option, both filled from `availableModels`), Save button with saved/error feedback. Loading, error and empty states as elsewhere.

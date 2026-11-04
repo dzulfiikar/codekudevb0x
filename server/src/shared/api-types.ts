@@ -44,6 +44,8 @@ export type WorkspaceStatus =
 
 export type ProjectStatus = "queued" | "cloning_repo" | "configuring_services" | "verifying" | "ready" | "failed";
 
+export type AgentProvider = "gemini" | "claude";
+
 export type Service = { name: string; port: number; url: string; reachable: boolean };
 
 export type Project = {
@@ -54,6 +56,7 @@ export type Project = {
   status: ProjectStatus;
   services: Service[];
   error: string | null;
+  instructions: string | null;
   createdAt: string;
 };
 
@@ -69,6 +72,9 @@ export type Workspace = {
   memoryMb: number;
   diskGb: number;
   hasGithubToken: boolean;
+  username: string;
+  hasSshKey: boolean;
+  hasPassword: boolean;
   error: string | null;
   projects: Project[];
   createdAt: string;

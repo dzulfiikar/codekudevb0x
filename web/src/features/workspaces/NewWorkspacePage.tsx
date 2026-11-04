@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { EyeIcon, EyeSlashIcon, WarningIcon } from "@phosphor-icons/react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { toErrorMessage } from "../../shared/api-client";
 import type { AgentCli } from "../../shared/api-types";
 import { ErrorBox } from "../../shared/components/ErrorBox";
@@ -10,6 +11,7 @@ import { Link, navigate } from "../../shared/router";
 import { useResource } from "../../shared/use-resource";
 import { useHosts } from "../hosts/HostsContext";
 import { settingsApi } from "../settings/settings-api";
+import { hasSetupAgentCredential } from "../settings/settings-status";
 import { workspacesApi } from "./workspaces-api";
 
 const coreOptions = [1, 2, 4, 6, 8];
@@ -26,14 +28,24 @@ type WorkspaceForm = {
   name: string;
   githubToken: string;
   firstProjectRepoUrl: string;
+  username: string;
+  hasSshKey: boolean;
   sshPublicKey: string;
+  hasPassword: boolean;
+  password: string;
+  confirmPassword: string;
   agentClis: AgentCli[];
   cores: number;
   memoryMb: number;
   diskGb: number;
 };
 
-type WorkspaceFormErrors = Partial<Record<"hostId" | "name" | "firstProjectRepoUrl" | "sshPublicKey", string>>;
+type WorkspaceFormErrors = Partial<
+  Record<"hostId" | "name" | "firstProjectRepoUrl" | "username" | "signIn" | "sshPublicKey" | "password" | "confirmPassword", string>
+>;
+
+const usernamePattern = /^[a-z_][a-z0-9_-]{0,31}$/;
+const systemUsernames = ["root", "ubuntu"];
 
 function validateWorkspace(form: WorkspaceForm): WorkspaceFormErrors {
   const errors: WorkspaceFormErrors = {};
@@ -45,8 +57,21 @@ function validateWorkspace(form: WorkspaceForm): WorkspaceFormErrors {
   if (repoUrl && !githubRepositoryUrlPattern.test(repoUrl)) {
     errors.firstProjectRepoUrl = "Enter the full repository URL, like https://github.com/owner/repo";
   }
-  if (!form.sshPublicKey.trim().startsWith("ssh-")) {
+  if (!usernamePattern.test(form.username)) {
+    errors.username = "Use a-z, 0-9, - and _, starting with a letter or _ (max 32).";
+  } else if (systemUsernames.includes(form.username)) {
+    errors.username = "That username is taken by the system. Pick another one.";
+  }
+  if (!form.hasSshKey && !form.hasPassword) errors.signIn = "Pick SSH key, Password, or both.";
+  if (form.hasSshKey && !form.sshPublicKey.trim().startsWith("ssh-")) {
     errors.sshPublicKey = "Paste a public key that starts with ssh-, like the contents of ~/.ssh/id_ed25519.pub";
+  }
+  if (form.hasPassword) {
+    if (form.password.length < 12 || form.password.length > 128 || /[\r\n]/.test(form.password)) {
+      errors.password = "Use 12 to 128 characters, on one line.";
+    } else if (form.confirmPassword !== form.password) {
+      errors.confirmPassword = "The passwords don't match.";
+    }
   }
   return errors;
 }
@@ -60,7 +85,12 @@ export function NewWorkspacePage() {
     name: "",
     githubToken: "",
     firstProjectRepoUrl: "",
+    username: "dev",
+    hasSshKey: true,
     sshPublicKey: "",
+    hasPassword: false,
+    password: "",
+    confirmPassword: "",
     agentClis: ["claude"],
     cores: 2,
     memoryMb: 4096,
@@ -70,6 +100,7 @@ export function NewWorkspacePage() {
   const [submitError, setSubmitError] = useState<string>();
   const [isSending, setIsSending] = useState(false);
 
+  const signInDescribedBy = fieldErrors.signIn ? "workspace-signIn-error workspace-signIn-help" : "workspace-signIn-help";
   const readyHosts = hostList.filter((host) => host.templateStatus === "ready");
   const hostId = form.hostId || readyHosts[0]?.id || "";
   const selectedHost = hostList.find((host) => host.id === hostId);
@@ -87,7 +118,7 @@ export function NewWorkspacePage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const submitted = { ...form, hostId, name: form.name.trim() };
+    const submitted = { ...form, hostId, name: form.name.trim(), username: form.username.trim() };
     const errors = validateWorkspace(submitted);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) {
@@ -102,13 +133,16 @@ export function NewWorkspacePage() {
         hostId: submitted.hostId,
         name: submitted.name,
         githubToken: submitted.githubToken.trim() || undefined,
-        sshPublicKey: submitted.sshPublicKey.trim(),
+        username: submitted.username,
+        sshPublicKey: submitted.hasSshKey ? submitted.sshPublicKey.trim() : undefined,
+        password: submitted.hasPassword ? submitted.password : undefined,
         agentClis: submitted.agentClis,
         cores: submitted.cores,
         memoryMb: submitted.memoryMb,
         diskGb: submitted.diskGb,
         firstProjectRepoUrl: submitted.firstProjectRepoUrl.trim() || undefined,
       });
+      setForm((current) => ({ ...current, password: "", confirmPassword: "" }));
       navigate(`/workspaces/${encodeURIComponent(workspace.id)}`);
     } catch (caught) {
       setSubmitError(toErrorMessage(caught));
@@ -235,49 +269,118 @@ export function NewWorkspacePage() {
 
             <FormSection title="Access">
               <Field
-                id="workspace-sshPublicKey"
-                label="SSH public key"
-                help="Added to user dev."
-                error={fieldErrors.sshPublicKey}
+                id="workspace-username"
+                label="Username"
+                help="Linux user on the VM, with sudo. a-z, 0-9, - and _, up to 32 characters. Not root or ubuntu."
+                error={fieldErrors.username}
               >
                 {(props) => (
-                  <textarea
+                  <input
                     {...props}
-                    rows={3}
-                    className={`${inputClass} resize-y`}
-                    value={form.sshPublicKey}
-                    onChange={(event) => update("sshPublicKey", event.target.value)}
-                    placeholder="ssh-ed25519 AAAAC3Nza... you@laptop"
+                    className={inputClass}
+                    value={form.username}
+                    onChange={(event) => update("username", event.target.value)}
+                    autoComplete="off"
                     spellCheck={false}
                   />
                 )}
               </Field>
+              <fieldset className="m-0 flex min-w-0 flex-col gap-1.5 border-0 p-0">
+                <legend className="mb-1.5 p-0 text-sm font-semibold">Sign in with</legend>
+                <div className="flex gap-3">
+                  <CheckboxCard
+                    id="workspace-signIn"
+                    isChecked={form.hasSshKey}
+                    onChange={(isChecked) => update("hasSshKey", isChecked)}
+                    describedBy={signInDescribedBy}
+                  >
+                    SSH key <span className="ml-1 text-xs text-muted">recommended</span>
+                  </CheckboxCard>
+                  <CheckboxCard isChecked={form.hasPassword} onChange={(isChecked) => update("hasPassword", isChecked)} describedBy={signInDescribedBy}>
+                    Password <span className="ml-1 text-xs text-muted">for machines without your key</span>
+                  </CheckboxCard>
+                </div>
+                {fieldErrors.signIn && (
+                  <p id="workspace-signIn-error" className="m-0 text-xs text-danger">
+                    {fieldErrors.signIn}
+                  </p>
+                )}
+                <p id="workspace-signIn-help" className="m-0 text-xs leading-[18px] text-muted">
+                  Pick at least one.
+                </p>
+              </fieldset>
+              {form.hasSshKey && (
+                <Field
+                  id="workspace-sshPublicKey"
+                  label="SSH public key"
+                  help="Added to the user above. Also used for git push through ssh -A."
+                  error={fieldErrors.sshPublicKey}
+                >
+                  {(props) => (
+                    <textarea
+                      {...props}
+                      rows={3}
+                      className={`${inputClass} resize-y`}
+                      value={form.sshPublicKey}
+                      onChange={(event) => update("sshPublicKey", event.target.value)}
+                      placeholder="ssh-ed25519 AAAAC3Nza... you@laptop"
+                      spellCheck={false}
+                    />
+                  )}
+                </Field>
+              )}
+              {form.hasPassword && (
+                <>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Field id="workspace-password" label="Password" error={fieldErrors.password}>
+                        {(props) => (
+                          <PasswordInput
+                            {...props}
+                            aria-describedby={[props["aria-describedby"], "workspace-password-help"].filter(Boolean).join(" ")}
+                            value={form.password}
+                            onChange={(value) => update("password", value)}
+                          />
+                        )}
+                      </Field>
+                      <Field id="workspace-confirmPassword" label="Confirm password" error={fieldErrors.confirmPassword}>
+                        {(props) => (
+                          <PasswordInput
+                            {...props}
+                            aria-describedby={[props["aria-describedby"], "workspace-password-help"].filter(Boolean).join(" ")}
+                            value={form.confirmPassword}
+                            onChange={(value) => update("confirmPassword", value)}
+                          />
+                        )}
+                      </Field>
+                    </div>
+                    <p id="workspace-password-help" className="m-0 text-xs leading-[18px] text-muted">
+                      At least 12 characters. Set inside the VM through the guest agent after boot. The app never stores it and can't show it again.
+                    </p>
+                  </div>
+                  <div className="flex gap-3 rounded-md border border-warn/40 bg-warn/10 px-4 py-3">
+                    <WarningIcon size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden="true" />
+                    <p className="m-0 text-sm">
+                      Anyone who can reach the VM on your network can try this password over SSH. The user has sudo without a password. Use a long, unique
+                      password, or an SSH key only.
+                    </p>
+                  </div>
+                </>
+              )}
             </FormSection>
 
             <fieldset className="m-0 flex flex-col gap-3 border-0 border-t border-line p-0 pt-5">
               <legend className="float-left mb-3 w-full p-0 text-base font-semibold">Agent CLI</legend>
               <div className="flex gap-3">
-                {agentOptions.map((option) => {
-                  const isChecked = form.agentClis.includes(option.value);
-                  return (
-                    <label
-                      key={option.value}
-                      className={`flex flex-1 cursor-pointer items-center gap-3 rounded-md border px-4 py-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
-                        isChecked ? "border-accent bg-accent/10" : "border-line"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        className="size-4 shrink-0 accent-accent focus:outline-none"
-                        checked={isChecked}
-                        onChange={(event) => toggleAgent(option.value, event.target.checked)}
-                      />
-                      <span className="text-sm">
-                        {option.name} <span className="ml-1 font-mono text-xs text-muted">{option.command}</span>
-                      </span>
-                    </label>
-                  );
-                })}
+                {agentOptions.map((option) => (
+                  <CheckboxCard
+                    key={option.value}
+                    isChecked={form.agentClis.includes(option.value)}
+                    onChange={(isChecked) => toggleAgent(option.value, isChecked)}
+                  >
+                    {option.name} <span className="ml-1 font-mono text-xs text-muted">{option.command}</span>
+                  </CheckboxCard>
+                ))}
               </div>
             </fieldset>
 
@@ -319,11 +422,11 @@ export function NewWorkspacePage() {
               </div>
             </FormSection>
 
-            {settings.data?.geminiApiKeySource === "none" && (
+            {settings.data && !hasSetupAgentCredential(settings.data) && (
               <p className="m-0 text-xs text-muted">
-                Gemma has no API key, so projects will fail to set up.{" "}
+                The setup agent has no {settings.data.agentProvider === "claude" ? "Claude credential" : "Gemini API key"}, so projects will fail to set up.{" "}
                 <Link href="/settings" className="focus-ring rounded-sm text-accent">
-                  Add a Gemini API key on the Settings page first
+                  Add one on the Settings page first.
                 </Link>
               </p>
             )}
@@ -341,18 +444,108 @@ export function NewWorkspacePage() {
           </form>
         )}
       </div>
-      <WhatHappens templateVmid={selectedHost?.templateVmid} />
+      <WhatHappens
+        templateVmid={selectedHost?.templateVmid}
+        username={form.username.trim() || "dev"}
+        hasSshKey={form.hasSshKey}
+        hasPassword={form.hasPassword}
+      />
     </div>
   );
 }
 
-function WhatHappens({ templateVmid }: { templateVmid: number | undefined }) {
+function CheckboxCard({
+  id,
+  isChecked,
+  onChange,
+  describedBy,
+  children,
+}: {
+  id?: string;
+  isChecked: boolean;
+  onChange: (isChecked: boolean) => void;
+  describedBy?: string;
+  children: ReactNode;
+}) {
+  return (
+    <label
+      className={`flex flex-1 cursor-pointer items-center gap-3 rounded-md border px-4 py-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
+        isChecked ? "border-accent bg-accent/10" : "border-line"
+      }`}
+    >
+      <input
+        id={id}
+        type="checkbox"
+        className="size-4 shrink-0 accent-accent focus:outline-none"
+        checked={isChecked}
+        onChange={(event) => onChange(event.target.checked)}
+        aria-describedby={describedBy}
+      />
+      <span className="text-sm">{children}</span>
+    </label>
+  );
+}
+
+function PasswordInput({
+  id,
+  value,
+  onChange,
+  "aria-invalid": isInvalid,
+  "aria-describedby": describedBy,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  "aria-invalid": boolean | undefined;
+  "aria-describedby": string | undefined;
+}) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        type={isPasswordVisible ? "text" : "password"}
+        className={`${inputClass} pr-10`}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        autoComplete="new-password"
+        spellCheck={false}
+        aria-invalid={isInvalid}
+        aria-describedby={describedBy}
+      />
+      <button
+        type="button"
+        className="focus-ring absolute inset-y-0 right-0 grid w-9 place-items-center rounded-r-md text-muted hover:text-text"
+        onClick={() => setIsPasswordVisible((current) => !current)}
+        aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+        aria-pressed={isPasswordVisible}
+      >
+        {isPasswordVisible ? <EyeSlashIcon size={16} aria-hidden="true" /> : <EyeIcon size={16} aria-hidden="true" />}
+      </button>
+    </div>
+  );
+}
+
+function WhatHappens({
+  templateVmid,
+  username,
+  hasSshKey,
+  hasPassword,
+}: {
+  templateVmid: number | undefined;
+  username: string;
+  hasSshKey: boolean;
+  hasPassword: boolean;
+}) {
+  const createUserStep = [`Boot, create user ${username}`, hasSshKey && " with your key", hasPassword && ", then set the password"]
+    .filter(Boolean)
+    .join("");
   const steps = [
     templateVmid === undefined ? "Clone the host's template" : `Clone template ${templateVmid}`,
-    "Boot, create user dev with your key",
+    createUserStep,
     "Install Node 22, Docker and the agent CLI",
     "Clone the repo to ~/projects",
-    "Gemma starts its dev servers on free ports",
+    "The setup agent starts its dev servers on free ports",
     "Show links and the ssh command",
   ];
   return (

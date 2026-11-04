@@ -158,9 +158,9 @@ try {
       node: host.node,
       allowSelfSigned: host.allowSelfSigned,
     });
-    const path = `/home/dev/projects/${project.name}/${file}`;
+    const path = `/home/${ready.username}/projects/${project.name}/${file}`;
     const append = `printf '%s\\n' ${quoteForShell(`<!-- ${marker} -->`)} >> ${quoteForShell(path)}`;
-    const result = await proxmox.runInGuest(ready.vmid, ["sudo", "-u", "dev", "bash", "-c", append]);
+    const result = await proxmox.runInGuest(ready.vmid, ["sudo", "-u", ready.username, "bash", "-c", append]);
     if (result.exitCode !== 0) throw new Error(`Editing ${path} failed: ${result.stderr}`);
 
     const editedAt = Date.now();

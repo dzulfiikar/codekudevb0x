@@ -6,29 +6,37 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-type SeedOptions = { instanceId: string; hostname: string; sshPublicKey: string };
+type SeedOptions = {
+  instanceId: string;
+  hostname: string;
+  username: string;
+  sshPublicKey: string | null;
+  hasPassword: boolean;
+};
 
 // JSON strings are valid YAML scalars, so JSON.stringify quotes user values safely.
-function userData(sshPublicKey: string) {
-  return `#cloud-config
-users:
-  - name: dev
-    shell: /bin/bash
-    sudo: "ALL=(ALL) NOPASSWD:ALL"
-    groups: [sudo]
-    ssh_authorized_keys:
-      - ${JSON.stringify(sshPublicKey.trim())}
-package_update: true
-packages:
-  - qemu-guest-agent
-  - git
-  - docker.io
-  - docker-compose-v2
-  - curl
-  - ca-certificates
-runcmd:
-  - [systemctl, enable, --now, qemu-guest-agent]
-`;
+function userData({ username, sshPublicKey, hasPassword }: SeedOptions) {
+  return [
+    "#cloud-config",
+    "users:",
+    `  - name: ${JSON.stringify(username)}`,
+    "    shell: /bin/bash",
+    '    sudo: "ALL=(ALL) NOPASSWD:ALL"',
+    "    groups: [sudo]",
+    ...(sshPublicKey ? ["    ssh_authorized_keys:", `      - ${JSON.stringify(sshPublicKey.trim())}`] : []),
+    ...(hasPassword ? ["ssh_pwauth: true"] : []),
+    "package_update: true",
+    "packages:",
+    "  - qemu-guest-agent",
+    "  - git",
+    "  - docker.io",
+    "  - docker-compose-v2",
+    "  - curl",
+    "  - ca-certificates",
+    "runcmd:",
+    "  - [systemctl, enable, --now, qemu-guest-agent]",
+    "",
+  ].join("\n");
 }
 
 const networkConfig = `version: 2
@@ -45,7 +53,7 @@ export async function buildSeedIso(options: SeedOptions) {
   const isoPath = join(directory, "seed.iso");
   try {
     await mkdir(contentDirectory);
-    await writeFile(join(contentDirectory, "user-data"), userData(options.sshPublicKey));
+    await writeFile(join(contentDirectory, "user-data"), userData(options));
     await writeFile(
       join(contentDirectory, "meta-data"),
       `instance-id: ${JSON.stringify(options.instanceId)}\nlocal-hostname: ${JSON.stringify(options.hostname)}\n`,
