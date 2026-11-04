@@ -8,3 +8,5 @@ settingsRoutes.get("/", settingsController.get);
 settingsRoutes.put("/", settingsController.save);
 
 settingsRoutes.post("/test", settingsController.testGeminiApiKey);
+
+settingsRoutes.post("/test-claude", settingsController.testClaudeCredential);

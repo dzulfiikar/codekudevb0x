@@ -1,6 +1,13 @@
 import { decrypt } from "../../infrastructure/encryption.js";
 import { GeminiClient } from "../../integrations/gemini/gemini-client.js";
-import { type ReportedService, SetupAgent } from "./project-setup-agent.js";
+import { ClaudeSetupAgent } from "./claude-setup-agent.js";
+import { SetupAgent } from "./project-setup-agent.js";
+import {
+  buildSystemInstruction,
+  type ProjectSetupAgent,
+  type ReportedService,
+  type SetupContext,
+} from "./project-setup-instructions.js";
 import { projectRepository, type ProjectRecord } from "./project-repository.js";
 import { workspaceRepository } from "../workspaces/workspace-repository.js";
 import type { Project, ProjectStatus, Service } from "../../shared/api-types.js";
@@ -14,6 +21,7 @@ import { settingsService } from "../settings/settings-service.js";
 import { eventService } from "../events/event-service.js";
 
 const busyStatuses: ProjectStatus[] = ["queued", "cloning_repo", "configuring_services", "verifying"];
+const maxInstructionsLength = 4000;
 
 function toProjectResponse(record: ProjectRecord): Project {
   return {
@@ -24,6 +32,7 @@ function toProjectResponse(record: ProjectRecord): Project {
     status: record.status,
     services: record.services,
     error: record.error,
+    instructions: record.instructions,
     createdAt: record.createdAt,
   };
 }
@@ -64,7 +73,7 @@ class ProjectService {
     return (await projectRepository.listByWorkspace(workspaceId)).map(toProjectResponse);
   }
 
-  async create(workspaceId: string, input: { repoUrl: string; name?: string }) {
+  async create(workspaceId: string, input: { repoUrl: string; name?: string; instructions?: string }) {
     await this.getRunningWorkspace(workspaceId);
 
     if (!githubRepositoryUrlPattern.test(input.repoUrl)) {
@@ -77,6 +86,10 @@ class ProjectService {
     if (await projectRepository.findByName(workspaceId, name)) {
       throw new InvalidInputError(`A project named "${name}" already exists in this workspace`);
     }
+    const instructions = input.instructions?.trim() || null;
+    if (instructions && instructions.length > maxInstructionsLength) {
+      throw new InvalidInputError(`Project instructions can be at most ${maxInstructionsLength.toLocaleString("en-US")} characters`);
+    }
 
     const project = toProjectResponse(
       await projectRepository.create({
@@ -87,6 +100,7 @@ class ProjectService {
         status: "queued",
         services: [],
         error: null,
+        instructions,
         createdAt: new Date().toISOString(),
       }),
     );
@@ -127,7 +141,17 @@ class ProjectService {
     );
   }
 
-  private async createSetupAgent(options: Omit<ConstructorParameters<typeof SetupAgent>[0], "gemini">) {
+  private async createSetupAgent(options: SetupContext): Promise<ProjectSetupAgent> {
+    if ((await settingsService.findAgentProvider()) === "claude") {
+      const claude = await settingsService.findClaudeSettings();
+      if (!claude.credential) throw new Error("No Claude credential. Add one on the Settings page.");
+      return new ClaudeSetupAgent({
+        ...options,
+        credential: claude.credential,
+        primaryModel: claude.primaryModel,
+        fallbackModel: claude.fallbackModel,
+      });
+    }
     const gemini = await settingsService.findGeminiSettings();
     if (!gemini.apiKey) throw new Error("No Gemini API key. Add one on the Settings page.");
     const models = gemini.fallbackModel ? [gemini.primaryModel, gemini.fallbackModel] : [gemini.primaryModel];
@@ -146,16 +170,17 @@ class ProjectService {
       const match = githubRepositoryUrlPattern.exec(project.repoUrl);
       if (!match) throw new Error(`Not a GitHub repository URL: ${project.repoUrl}`);
       const repositoryPath = `${match[1]}/${match[2]}`;
-      const projectPath = `/home/dev/projects/${project.name}`;
+      const projectPath = `/home/${workspace.username}/projects/${project.name}`;
       const quotedProjectPath = quoteForShell(projectPath);
+      const user = quoteForShell(workspace.username);
 
       await this.setStatus(project, "cloning_repo");
       const token = workspace.githubToken ? decrypt(workspace.githubToken) : undefined;
-      const setSshRemote = `sudo -u dev git -C ${quotedProjectPath} remote set-url origin ${quoteForShell(`git@github.com:${repositoryPath}.git`)}`;
+      const setSshRemote = `sudo -u ${user} git -C ${quotedProjectPath} remote set-url origin ${quoteForShell(`git@github.com:${repositoryPath}.git`)}`;
       // The GitHub token goes in on stdin so it never appears in a command line, the process list or Proxmox task logs.
       const cloneCommand = token
-        ? `read -r TOKEN; sudo -u dev git clone "https://x-access-token:\${TOKEN}@github.com/"${quoteForShell(`${repositoryPath}.git`)} ${quotedProjectPath} && ${setSshRemote}`
-        : `sudo -u dev git clone ${quoteForShell(`https://github.com/${repositoryPath}.git`)} ${quotedProjectPath} && ${setSshRemote}`;
+        ? `read -r TOKEN; sudo -u ${user} git clone "https://x-access-token:\${TOKEN}@github.com/"${quoteForShell(`${repositoryPath}.git`)} ${quotedProjectPath} && ${setSshRemote}`
+        : `sudo -u ${user} git clone ${quoteForShell(`https://github.com/${repositoryPath}.git`)} ${quotedProjectPath} && ${setSshRemote}`;
       const cloneResult = await proxmox.runInGuest(vmid, ["bash", "-c", cloneCommand], {
         input: token ? `${token}\n` : undefined,
       });
@@ -175,9 +200,14 @@ class ProjectService {
 
       await this.setStatus(project, "configuring_services");
       const agent = await this.createSetupAgent({
-        projectName: project.name,
-        projectPath,
-        usedPorts: await this.findUsedPorts(project.workspaceId, project.id),
+        systemPrompt: buildSystemInstruction({
+          template: await settingsService.getAgentPrompt(),
+          instructions: project.instructions,
+          projectName: project.name,
+          projectPath,
+          usedPorts: await this.findUsedPorts(project.workspaceId, project.id),
+          username: workspace.username,
+        }),
         runCommand: async (command) => {
           const result = await proxmox
             .runInGuest(vmid, ["bash", "-lc", `cd ${quotedProjectPath} && ${command}`])

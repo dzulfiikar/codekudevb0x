@@ -87,7 +87,7 @@ function LogEntry({ event }: { event: Event }) {
   switch (event.type) {
     case "agent":
       return (
-        <TimelineText badge={<ChatCircleTextIcon size={16} aria-label="Gemma" />} tone="text-text">
+        <TimelineText badge={<ChatCircleTextIcon size={16} aria-label="Setup agent" />} tone="text-text">
           {event.message}
         </TimelineText>
       );

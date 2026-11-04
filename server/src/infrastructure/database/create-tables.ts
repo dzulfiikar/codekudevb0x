@@ -31,10 +31,13 @@ export async function createTables() {
       memory_mb INTEGER NOT NULL,
       disk_gb INTEGER NOT NULL,
       github_token TEXT,
-      ssh_public_key TEXT NOT NULL,
+      ssh_public_key TEXT,
       error TEXT,
       created_at TEXT NOT NULL
     );
+    ALTER TABLE workspaces ALTER COLUMN ssh_public_key DROP NOT NULL;
+    ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS username TEXT NOT NULL DEFAULT 'dev';
+    ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS has_password BOOLEAN NOT NULL DEFAULT false;
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       workspace_id TEXT NOT NULL,
@@ -45,6 +48,7 @@ export async function createTables() {
       error TEXT,
       created_at TEXT NOT NULL
     );
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS instructions TEXT;
     CREATE TABLE IF NOT EXISTS events (
       id SERIAL PRIMARY KEY,
       workspace_id TEXT NOT NULL,
@@ -60,5 +64,10 @@ export async function createTables() {
       primary_model TEXT NOT NULL,
       fallback_model TEXT
     );
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS agent_provider TEXT NOT NULL DEFAULT 'gemini';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS claude_credential TEXT;
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS claude_primary_model TEXT NOT NULL DEFAULT 'opus';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS claude_fallback_model TEXT DEFAULT 'sonnet';
+    ALTER TABLE settings ADD COLUMN IF NOT EXISTS agent_prompt TEXT;
   `);
 }

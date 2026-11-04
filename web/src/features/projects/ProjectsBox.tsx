@@ -80,6 +80,12 @@ function ProjectRow({
           <span>~/projects/{project.name}</span>
         </div>
         {project.status === "failed" && <p className="m-0 text-sm text-danger">{project.error ?? "Setup failed. Open the log to see why."}</p>}
+        {project.instructions && (
+          <details>
+            <summary className="focus-ring w-fit cursor-pointer rounded-sm text-xs text-muted">Instructions</summary>
+            <p className="mt-1 mb-0 rounded-md border border-line-muted bg-inset px-3 py-2 font-mono text-xs whitespace-pre-wrap">{project.instructions}</p>
+          </details>
+        )}
       </div>
       <div className="flex w-[260px] shrink-0 flex-col gap-0.5">
         {project.services.length > 0 ? (

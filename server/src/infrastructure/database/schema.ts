@@ -1,5 +1,5 @@
 import { boolean, integer, jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
-import type { EventBody, HostCheck, ProjectStatus, Service, TemplateStatus, WorkspaceStatus } from "../../shared/api-types.js";
+import type { AgentProvider, EventBody, HostCheck, ProjectStatus, Service, TemplateStatus, WorkspaceStatus } from "../../shared/api-types.js";
 
 export const hosts = pgTable("hosts", {
   id: text("id").primaryKey(),
@@ -31,7 +31,9 @@ export const workspaces = pgTable("workspaces", {
   memoryMb: integer("memory_mb").notNull(),
   diskGb: integer("disk_gb").notNull(),
   githubToken: text("github_token"),
-  sshPublicKey: text("ssh_public_key").notNull(),
+  sshPublicKey: text("ssh_public_key"),
+  username: text("username").notNull().default("dev"),
+  hasPassword: boolean("has_password").notNull().default(false),
   error: text("error"),
   createdAt: text("created_at").notNull(),
 });
@@ -44,6 +46,7 @@ export const projects = pgTable("projects", {
   status: text("status").$type<ProjectStatus>().notNull(),
   services: jsonb("services").$type<Service[]>().notNull(),
   error: text("error"),
+  instructions: text("instructions"),
   createdAt: text("created_at").notNull(),
 });
 
@@ -61,4 +64,9 @@ export const settings = pgTable("settings", {
   geminiApiKey: text("gemini_api_key"),
   primaryModel: text("primary_model").notNull(),
   fallbackModel: text("fallback_model"),
+  agentProvider: text("agent_provider").$type<AgentProvider>().notNull().default("gemini"),
+  claudeCredential: text("claude_credential"),
+  claudePrimaryModel: text("claude_primary_model").notNull().default("opus"),
+  claudeFallbackModel: text("claude_fallback_model").default("sonnet"),
+  agentPrompt: text("agent_prompt"),
 });

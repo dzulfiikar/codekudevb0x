@@ -11,6 +11,10 @@ import { projectsApi } from "./projects-api";
 
 type ProjectFormErrors = { repoUrl?: string; name?: string };
 
+const instructionsLimit = 4_000;
+
+const instructionsInputClass = `${inputClass.replace("text-sm", "text-[13px]")} resize-y`;
+
 function nameFromRepoUrl(repoUrl: string): string | undefined {
   return githubRepositoryUrlPattern.exec(repoUrl.trim())?.[2]?.toLowerCase();
 }
@@ -29,6 +33,7 @@ export function AddProjectDialog({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [repoUrl, setRepoUrl] = useState("");
   const [name, setName] = useState("");
+  const [instructions, setInstructions] = useState("");
   const [fieldErrors, setFieldErrors] = useState<ProjectFormErrors>({});
   const [submitError, setSubmitError] = useState<string>();
   const [isSending, setIsSending] = useState(false);
@@ -39,6 +44,7 @@ export function AddProjectDialog({
     if (isOpen && !dialog.open) {
       setRepoUrl("");
       setName("");
+      setInstructions("");
       setFieldErrors({});
       setSubmitError(undefined);
       dialog.showModal();
@@ -54,9 +60,11 @@ export function AddProjectDialog({
     project.services.map((service) => ({ ...service, projectName: project.name })),
   );
   const activeProject = workspace.projects.find(isSettingUp);
+  const isInstructionsOverLimit = instructions.length > instructionsLimit;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isInstructionsOverLimit) return;
     const errors: ProjectFormErrors = {};
     if (!githubRepositoryUrlPattern.test(repoUrl.trim())) errors.repoUrl = "Enter the full repository URL, like https://github.com/owner/repo";
     if (projectName && !resourceNamePattern.test(projectName)) {
@@ -72,7 +80,11 @@ export function AddProjectDialog({
     setIsSending(true);
     setSubmitError(undefined);
     try {
-      const project = await projectsApi.create(workspace.id, { repoUrl: repoUrl.trim(), name: name.trim() || undefined });
+      const project = await projectsApi.create(workspace.id, {
+        repoUrl: repoUrl.trim(),
+        name: name.trim() || undefined,
+        instructions: instructions.trim() || undefined,
+      });
       onAdded(project);
       onClose();
     } catch (caught) {
@@ -137,6 +149,35 @@ export function AddProjectDialog({
               />
             )}
           </Field>
+          <Field
+            id="project-instructions"
+            label={
+              <>
+                Instructions for this project <span className="font-normal text-muted">(optional)</span>
+              </>
+            }
+            help={
+              <span className="flex justify-between gap-3">
+                <span>Added after the agent prompt from Settings, for this project and its retry.</span>
+                <span className={`shrink-0 font-mono ${isInstructionsOverLimit ? "text-danger" : ""}`}>
+                  {instructions.length.toLocaleString("en-US")} / {instructionsLimit.toLocaleString("en-US")}
+                </span>
+              </span>
+            }
+          >
+            {(props) => (
+              <textarea
+                {...props}
+                rows={4}
+                className={instructionsInputClass}
+                value={instructions}
+                onChange={(event) => setInstructions(event.target.value)}
+                aria-invalid={isInstructionsOverLimit || undefined}
+                placeholder={"Use the dev profile: docker compose --profile dev up.\nRun npm run db:seed once after the database starts."}
+                spellCheck={false}
+              />
+            )}
+          </Field>
           <div className="flex gap-3 rounded-md border border-accent/40 bg-accent/10 px-4 py-3">
             <InfoIcon size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
             <div className="flex flex-col gap-1">
@@ -146,7 +187,7 @@ export function AddProjectDialog({
                   : "No ports in use yet"}
               </p>
               <p className="m-0 text-xs text-muted">
-                Gemma picks a free one.{" "}
+                The setup agent picks a free one.{" "}
                 {workspace.hasGithubToken ? "Uses the workspace's GitHub token." : "No GitHub token, so only public repos clone."}
                 {activeProject && ` Starts after ${activeProject.name} finishes.`}
               </p>
@@ -158,7 +199,7 @@ export function AddProjectDialog({
           <button type="button" className={secondaryButton} onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className={primaryButton} disabled={isSending}>
+          <button type="submit" className={primaryButton} disabled={isSending || isInstructionsOverLimit}>
             {isSending ? "Adding project" : "Add project"}
           </button>
         </div>
