@@ -1,5 +1,5 @@
 import { EventEmitter } from "node:events";
-import type { Event } from "../shared/api-types.js";
+import type { Event } from "../../shared/api-types.js";
 
 class EventBus {
   private readonly emitter = new EventEmitter().setMaxListeners(0);

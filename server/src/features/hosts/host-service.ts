@@ -1,10 +1,10 @@
-import { decrypt, encrypt } from "../infrastructure/encryption.js";
-import { ProxmoxClient, proxmoxClients, type ProxmoxConnection } from "../integrations/proxmox/proxmox-client.js";
-import { hostRepository, type HostRecord } from "../repositories/host-repository.js";
-import { workspaceRepository } from "../repositories/workspace-repository.js";
-import type { Host, TemplateStatus } from "../shared/api-types.js";
-import { ConflictError, HostNotReadyError, InvalidInputError, NotFoundError, toErrorMessage } from "../shared/errors.js";
-import { type HostCheckInput, hostReadinessService } from "./host-readiness-service.js";
+import { decrypt, encrypt } from "../../infrastructure/encryption.js";
+import { ProxmoxClient, proxmoxClients, type ProxmoxConnection } from "../../integrations/proxmox/proxmox-client.js";
+import { hostRepository, type HostRecord } from "./host-repository.js";
+import { workspaceRepository } from "../workspaces/workspace-repository.js";
+import type { Host, TemplateStatus } from "../../shared/api-types.js";
+import { ConflictError, HostNotReadyError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
+import { type HostCheckInput, hostReadinessService } from "./host-readiness-check.js";
 
 type NewHostInput = HostCheckInput & { name: string };
 

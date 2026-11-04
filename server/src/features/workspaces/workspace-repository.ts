@@ -1,7 +1,7 @@
 import { desc, eq, inArray } from "drizzle-orm";
-import { database } from "../infrastructure/database/client.js";
-import { workspaces } from "../infrastructure/database/schema.js";
-import type { WorkspaceStatus } from "../shared/api-types.js";
+import { database } from "../../infrastructure/database/client.js";
+import { workspaces } from "../../infrastructure/database/schema.js";
+import type { WorkspaceStatus } from "../../shared/api-types.js";
 
 export type WorkspaceRecord = typeof workspaces.$inferSelect;
 

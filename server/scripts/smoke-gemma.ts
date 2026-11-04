@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { settingsService } from "../src/services/settings-service.js";
+import { settingsService } from "../src/features/settings/settings-service.js";
 
 const geminiSettings = await settingsService.findGeminiSettings();
 if (!geminiSettings.apiKey) {

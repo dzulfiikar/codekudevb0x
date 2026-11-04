@@ -1,8 +1,8 @@
 import { z } from "zod";
-import type { Event } from "../shared/api-types.js";
-import { githubRepositoryUrlPattern, resourceNamePattern } from "../shared/patterns.js";
-import { workspaceEventService } from "../services/workspace-event-service.js";
-import { workspaceService } from "../services/workspace-service.js";
+import type { Event } from "../../shared/api-types.js";
+import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns.js";
+import { workspaceEventService } from "../events/event-service.js";
+import { workspaceService } from "./workspace-service.js";
 
 const optionalText = z
   .string()

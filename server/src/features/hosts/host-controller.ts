@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { hostService } from "../services/host-service.js";
+import { hostService } from "./host-service.js";
 
 const optionalText = z
   .string()

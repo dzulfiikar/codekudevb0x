@@ -1,7 +1,7 @@
-import { decrypt, encrypt } from "../infrastructure/encryption.js";
-import { GeminiClient, type GemmaModel } from "../integrations/gemini/gemini-client.js";
-import { settingsRepository } from "../repositories/settings-repository.js";
-import { InvalidInputError, toErrorMessage } from "../shared/errors.js";
+import { decrypt, encrypt } from "../../infrastructure/encryption.js";
+import { GeminiClient, type GemmaModel } from "../../integrations/gemini/gemini-client.js";
+import { settingsRepository } from "./settings-repository.js";
+import { InvalidInputError, toErrorMessage } from "../../shared/errors.js";
 
 type Settings = {
   geminiApiKeySource: "database" | "none";

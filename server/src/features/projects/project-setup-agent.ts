@@ -2,7 +2,7 @@ import { type Content, createPartFromFunctionResponse, type FunctionCall, type F
 import { z } from "zod";
 import { resourceNamePattern } from "../../shared/patterns.js";
 import type { CommandResult } from "../../shared/shell.js";
-import type { GeminiClient } from "./gemini-client.js";
+import type { GeminiClient } from "../../integrations/gemini/gemini-client.js";
 
 export type ReportedService = { name: string; port: number };
 

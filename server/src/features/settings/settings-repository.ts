@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { database } from "../infrastructure/database/client.js";
-import { settings } from "../infrastructure/database/schema.js";
+import { database } from "../../infrastructure/database/client.js";
+import { settings } from "../../infrastructure/database/schema.js";
 
 const settingsRowId = 1;
 

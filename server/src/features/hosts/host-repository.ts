@@ -1,6 +1,6 @@
 import { asc, eq } from "drizzle-orm";
-import { database } from "../infrastructure/database/client.js";
-import { hosts } from "../infrastructure/database/schema.js";
+import { database } from "../../infrastructure/database/client.js";
+import { hosts } from "../../infrastructure/database/schema.js";
 
 export type HostRecord = typeof hosts.$inferSelect;
 

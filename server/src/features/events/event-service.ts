@@ -1,7 +1,7 @@
-import { eventBus } from "../infrastructure/event-bus.js";
-import { eventRepository } from "../repositories/event-repository.js";
-import type { Event, EventBody } from "../shared/api-types.js";
-import type { CommandResult } from "../shared/shell.js";
+import { eventBus } from "./event-bus.js";
+import { eventRepository } from "./event-repository.js";
+import type { Event, EventBody } from "../../shared/api-types.js";
+import type { CommandResult } from "../../shared/shell.js";
 
 class WorkspaceEventService {
   async record(workspaceId: string, projectId: string | null, body: EventBody) {

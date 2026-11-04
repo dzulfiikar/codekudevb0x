@@ -1,7 +1,7 @@
 import { and, asc, eq, gt } from "drizzle-orm";
-import { database } from "../infrastructure/database/client.js";
-import { events } from "../infrastructure/database/schema.js";
-import type { Event, EventBody } from "../shared/api-types.js";
+import { database } from "../../infrastructure/database/client.js";
+import { events } from "../../infrastructure/database/schema.js";
+import type { Event, EventBody } from "../../shared/api-types.js";
 
 class EventRepository {
   async create(workspaceId: string, projectId: string | null, body: EventBody): Promise<Event> {

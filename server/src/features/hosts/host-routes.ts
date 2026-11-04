@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { hostController } from "../controllers/host-controller.js";
+import { hostController } from "./host-controller.js";
 
 export const hostRoutes = Router();
 

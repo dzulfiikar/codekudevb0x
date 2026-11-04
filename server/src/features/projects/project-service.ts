@@ -1,16 +1,16 @@
-import { decrypt } from "../infrastructure/encryption.js";
-import { GeminiClient } from "../integrations/gemini/gemini-client.js";
-import { type ReportedService, SetupAgent } from "../integrations/gemini/setup-agent.js";
-import { projectRepository, type ProjectRecord } from "../repositories/project-repository.js";
-import { workspaceRepository } from "../repositories/workspace-repository.js";
-import type { Project, ProjectStatus, Service } from "../shared/api-types.js";
-import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../shared/errors.js";
-import { isTcpPortOpen } from "../shared/network.js";
-import { githubRepositoryUrlPattern, resourceNamePattern } from "../shared/patterns.js";
-import { quoteForShell, sleep } from "../shared/shell.js";
-import { hostService } from "./host-service.js";
-import { settingsService } from "./settings-service.js";
-import { workspaceEventService } from "./workspace-event-service.js";
+import { decrypt } from "../../infrastructure/encryption.js";
+import { GeminiClient } from "../../integrations/gemini/gemini-client.js";
+import { type ReportedService, SetupAgent } from "./project-setup-agent.js";
+import { projectRepository, type ProjectRecord } from "./project-repository.js";
+import { workspaceRepository } from "../workspaces/workspace-repository.js";
+import type { Project, ProjectStatus, Service } from "../../shared/api-types.js";
+import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
+import { isTcpPortOpen } from "../../shared/network.js";
+import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns.js";
+import { quoteForShell, sleep } from "../../shared/shell.js";
+import { hostService } from "../hosts/host-service.js";
+import { settingsService } from "../settings/settings-service.js";
+import { workspaceEventService } from "../events/event-service.js";
 
 const unfinishedStatuses: ProjectStatus[] = ["queued", "cloning_repo", "configuring_services", "verifying"];
 

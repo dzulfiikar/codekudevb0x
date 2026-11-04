@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { settingsService } from "../services/settings-service.js";
+import { settingsService } from "./settings-service.js";
 
 const saveSettingsBody = z.object({
   geminiApiKey: z.string().trim().optional(),

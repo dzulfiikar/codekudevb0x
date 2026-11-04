@@ -1,14 +1,14 @@
-import { encrypt } from "../infrastructure/encryption.js";
-import { buildSeedIso } from "../integrations/cloud-init/seed-iso-builder.js";
-import type { ProxmoxClient } from "../integrations/proxmox/proxmox-client.js";
-import { projectRepository } from "../repositories/project-repository.js";
-import { workspaceRepository, type WorkspaceRecord } from "../repositories/workspace-repository.js";
-import type { Workspace, WorkspaceStatus } from "../shared/api-types.js";
-import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../shared/errors.js";
-import { quoteForShell, sleep } from "../shared/shell.js";
-import { hostService } from "./host-service.js";
-import { projectService } from "./project-service.js";
-import { workspaceEventService } from "./workspace-event-service.js";
+import { encrypt } from "../../infrastructure/encryption.js";
+import { buildSeedIso } from "../../integrations/cloud-init/seed-iso-builder.js";
+import type { ProxmoxClient } from "../../integrations/proxmox/proxmox-client.js";
+import { projectRepository } from "../projects/project-repository.js";
+import { workspaceRepository, type WorkspaceRecord } from "./workspace-repository.js";
+import type { Workspace, WorkspaceStatus } from "../../shared/api-types.js";
+import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
+import { quoteForShell, sleep } from "../../shared/shell.js";
+import { hostService } from "../hosts/host-service.js";
+import { projectService } from "../projects/project-service.js";
+import { workspaceEventService } from "../events/event-service.js";
 
 type NewWorkspaceInput = {
   hostId: string;

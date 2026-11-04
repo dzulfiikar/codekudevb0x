@@ -1,7 +1,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
-import { database } from "../infrastructure/database/client.js";
-import { projects } from "../infrastructure/database/schema.js";
-import type { ProjectStatus } from "../shared/api-types.js";
+import { database } from "../../infrastructure/database/client.js";
+import { projects } from "../../infrastructure/database/schema.js";
+import type { ProjectStatus } from "../../shared/api-types.js";
 
 export type ProjectRecord = typeof projects.$inferSelect;
 

@@ -1,7 +1,7 @@
-import { ProxmoxClient, type ProxmoxConnection } from "../integrations/proxmox/proxmox-client.js";
-import type { HostCheck, HostCheckItem } from "../shared/api-types.js";
-import { toErrorMessage } from "../shared/errors.js";
-import { isTcpPortOpen } from "../shared/network.js";
+import { ProxmoxClient, type ProxmoxConnection } from "../../integrations/proxmox/proxmox-client.js";
+import type { HostCheck, HostCheckItem } from "../../shared/api-types.js";
+import { toErrorMessage } from "../../shared/errors.js";
+import { isTcpPortOpen } from "../../shared/network.js";
 
 export type HostCheckInput = Omit<ProxmoxConnection, "node"> & {
   node?: string;

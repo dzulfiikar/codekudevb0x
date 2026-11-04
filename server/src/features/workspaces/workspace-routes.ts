@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { projectController } from "../controllers/project-controller.js";
-import { workspaceController } from "../controllers/workspace-controller.js";
-import type { Event } from "../shared/api-types.js";
+import { projectController } from "../projects/project-controller.js";
+import { workspaceController } from "./workspace-controller.js";
+import type { Event } from "../../shared/api-types.js";
 
 export const workspaceRoutes = Router();
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { githubRepositoryUrlPattern } from "../shared/patterns.js";
-import { projectService } from "../services/project-service.js";
+import { githubRepositoryUrlPattern } from "../../shared/patterns.js";
+import { projectService } from "./project-service.js";
 
 const newProjectBody = z.object({
   repoUrl: z.string().trim().regex(githubRepositoryUrlPattern, "Use https://github.com/OWNER/REPO"),
