@@ -72,7 +72,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -214,7 +215,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -272,7 +274,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -324,7 +327,8 @@
                       "content": "One VM per workspace. Projects run in dev mode with hot reload.",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 14
+                      "fontSize": 14,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -410,7 +414,8 @@
                       "content": "Filter by name, IP or project",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 14
+                      "fontSize": 14,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -501,7 +506,8 @@
                       "content": "Newest first",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -597,7 +603,8 @@
                               "content": "VM 102",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -607,7 +614,8 @@
                               "content": "192.168.0.15",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -617,7 +625,8 @@
                               "content": "homelab-01",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -627,7 +636,8 @@
                               "content": "2 vCPU, 2 GB RAM, 20 GB",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -657,7 +667,8 @@
                               "content": "sandbox-demo",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 13
+                              "fontSize": 13,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -667,7 +678,8 @@
                               "content": "192.168.0.15:3000",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -687,7 +699,8 @@
                               "content": "notes-api",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 13
+                              "fontSize": 13,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -697,7 +710,8 @@
                               "content": "192.168.0.15:3001",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -797,7 +811,8 @@
                               "content": "VM 105",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -807,7 +822,8 @@
                               "content": "192.168.0.22",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -817,7 +833,8 @@
                               "content": "homelab-01",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -827,7 +844,8 @@
                               "content": "4 vCPU, 4 GB RAM, 40 GB",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -839,7 +857,8 @@
                           "content": "Installing Node 22 and Claude Code (4/5)",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -859,7 +878,8 @@
                           "content": "Projects start after setup",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -953,7 +973,8 @@
                               "content": "VM 103",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -963,7 +984,8 @@
                               "content": "no IP",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -973,7 +995,8 @@
                               "content": "homelab-01",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -983,7 +1006,8 @@
                               "content": "2 vCPU, 2 GB RAM, 20 GB",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -995,7 +1019,8 @@
                           "content": "No IP after 5 min. Check the VM console in Proxmox.",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -1015,7 +1040,8 @@
                           "content": "No projects set up",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -1098,7 +1124,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -1240,7 +1267,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -1298,7 +1326,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -1331,7 +1360,8 @@
                   "content": "Workspaces",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -1341,7 +1371,8 @@
                   "content": "/",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -1430,7 +1461,8 @@
                           "content": "VM 102",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -1440,7 +1472,8 @@
                           "content": "192.168.0.15",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -1450,7 +1483,8 @@
                           "content": "homelab-01",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -1460,7 +1494,8 @@
                           "content": "2 projects",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -1624,7 +1659,8 @@
                               "content": "One at a time, no port clashes",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -1722,7 +1758,8 @@
                                       "content": "github.com/dzulfiikar/sandbox-demo",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "text",
@@ -1732,7 +1769,8 @@
                                       "content": "~/projects/sandbox-demo",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -1754,7 +1792,8 @@
                                   "content": "vite, reloads on save",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -1764,7 +1803,8 @@
                                   "content": "http://192.168.0.15:3000",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -1897,7 +1937,8 @@
                                       "content": "github.com/dzulfiikar/notes-api",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "text",
@@ -1907,7 +1948,8 @@
                                       "content": "~/projects/notes-api",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -1929,7 +1971,8 @@
                                   "content": "notes-api, reloads on save",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -1939,7 +1982,8 @@
                                   "content": "http://192.168.0.15:3001",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -2049,7 +2093,8 @@
                                   "content": "gemma-4-26b-a4b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -2143,7 +2188,8 @@
                                       "content": "Vite app, port 3000 is free. Running it as a systemd service as user dev.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -2225,7 +2271,8 @@
                                               "content": "$ cd /home/dev/projects/sandbox-demo && sudo -u dev npm install",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -2235,7 +2282,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -2249,7 +2297,8 @@
                                           "content": "found 0 vulnerabilities",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -2333,7 +2382,8 @@
                                               "content": "$ systemctl daemon-reload && systemctl enable --now sandbox-demo-web.service",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -2343,7 +2393,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -2357,7 +2408,8 @@
                                           "content": "Created symlink /etc/systemd/system/multi-user.target.wants/sandbox-demo-web.service",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -2441,7 +2493,8 @@
                                               "content": "$ sleep 5 && ss -ltnp | grep 3000",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -2451,7 +2504,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -2465,7 +2519,8 @@
                                           "content": "LISTEN 0 511 0.0.0.0:3000 users:((\"node\",pid=8869,fd=25))",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -2525,7 +2580,8 @@
                                       "content": "Live at 192.168.0.15:3000 with hot reload.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -2635,7 +2691,8 @@
                                       "content": "ssh -A dev@192.168.0.15",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12.5
+                                      "fontSize": 12.5,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -2714,7 +2771,8 @@
                               "content": "-A lets git push use your SSH key. No push token in the VM.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -2795,7 +2853,8 @@
                                   "content": "Host",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -2805,7 +2864,8 @@
                                   "content": "homelab-01 (pve)",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -2824,7 +2884,8 @@
                                   "content": "Template",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -2834,7 +2895,8 @@
                                   "content": "9000, Ubuntu 24.04",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -2853,7 +2915,8 @@
                                   "content": "Size",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -2863,7 +2926,8 @@
                                   "content": "2 vCPU, 2 GB RAM, 20 GB",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -2882,7 +2946,8 @@
                                   "content": "Agent CLI",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -2892,7 +2957,8 @@
                                   "content": "Claude Code 2.1.316",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -2911,7 +2977,8 @@
                                   "content": "GitHub token",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -2921,7 +2988,8 @@
                                   "content": "read-only",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -3014,7 +3082,8 @@
                                   "content": "Cloned template 9000",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -3043,7 +3112,8 @@
                                   "content": "Booted, user dev created",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -3072,7 +3142,8 @@
                                   "content": "IP 192.168.0.15",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -3101,7 +3172,8 @@
                                   "content": "Node 22, Docker, git installed",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -3130,7 +3202,8 @@
                                   "content": "Claude Code installed",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -3217,7 +3290,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -3297,7 +3371,8 @@
                   "content": "Workspaces",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -3418,7 +3493,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -3463,7 +3539,8 @@
                   "content": "Proxmox servers that run your workspaces.",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -3581,7 +3658,8 @@
                                   "content": "https://homelab-01.your-tailnet.ts.net",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -3600,7 +3678,8 @@
                                   "content": "9 checks passed, just now",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -3711,7 +3790,8 @@
                                           "content": "9.2.21",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -3779,7 +3859,8 @@
                                           "content": "all required",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -3847,7 +3928,8 @@
                                           "content": "pve online",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -3915,7 +3997,8 @@
                                           "content": "4.6 of 15.4 GB",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -3983,7 +4066,8 @@
                                           "content": "local-lvm, 50.8 GB free",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4051,7 +4135,8 @@
                                           "content": "local, iso + import",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4119,7 +4204,8 @@
                                           "content": "vmbr0",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4187,7 +4273,8 @@
                                           "content": "9000",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4251,7 +4338,8 @@
                                           "content": "192.168.0.2 reachable",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4285,7 +4373,8 @@
                               "content": "1 workspace: hackday",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 13
+                              "fontSize": 13,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "frame",
@@ -4418,7 +4507,8 @@
                                   "content": "https://192.168.1.10:8006",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -4437,7 +4527,8 @@
                                   "content": "1 failed, 2 warnings",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -4548,7 +4639,8 @@
                                           "content": "9.1.4",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4616,7 +4708,8 @@
                                           "content": "2 missing",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -4630,7 +4723,8 @@
                                       "content": "Missing VM.GuestAgent.Unrestricted and Sys.Modify. Grant Administrator on / to the user and the token.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -4696,7 +4790,8 @@
                                           "content": "garage online",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4764,7 +4859,8 @@
                                           "content": "6.1 of 7.7 GB",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4832,7 +4928,8 @@
                                           "content": "local-lvm, 88.3 GB free",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -4900,7 +4997,8 @@
                                           "content": "import off",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -4914,7 +5012,8 @@
                                       "content": "Prepare host turns it on.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -4980,7 +5079,8 @@
                                           "content": "vmbr0",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -5048,7 +5148,8 @@
                                           "content": "9000 not found",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -5062,7 +5163,8 @@
                                       "content": "Prepare host builds it.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5124,7 +5226,8 @@
                                           "content": "192.168.1.10 reachable",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -5195,7 +5298,8 @@
                                   "content": "1",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -5226,7 +5330,8 @@
                                       "content": "Downloads the Ubuntu 24.04 cloud image and builds template 9000.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "frame",
@@ -5285,7 +5390,8 @@
                                   "content": "2",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -5316,7 +5422,8 @@
                                       "content": "Upload noble-server-cloudimg-amd64.img to local > Import as noble-server-cloudimg-amd64.qcow2, then Prepare host.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5337,7 +5444,8 @@
                                   "content": "3",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -5382,7 +5490,8 @@
                                           "content": "qm create 9000 --name sandbox-ubuntu-2404 --memory 2048 --cores 2 --cpu host \\",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         },
                                         {
                                           "type": "text",
@@ -5392,7 +5501,8 @@
                                           "content": "  --scsihw virtio-scsi-single --net0 virtio,bridge=vmbr0 --agent 1",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         },
                                         {
                                           "type": "text",
@@ -5402,7 +5512,8 @@
                                           "content": "qm set 9000 --scsi0 local-lvm:0,import-from=local:import/noble-server-cloudimg-amd64.qcow2",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         },
                                         {
                                           "type": "text",
@@ -5412,7 +5523,8 @@
                                           "content": "qm template 9000",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -5424,7 +5536,8 @@
                                       "content": "No cloud-init drive: the app adds its own.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5533,7 +5646,8 @@
                                   "content": "homelab",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -5588,7 +5702,8 @@
                                   "content": "https://pve.your-tailnet.ts.net",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -5643,7 +5758,8 @@
                                   "content": "user@pam!codeku",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -5657,7 +5773,8 @@
                               "content": "Needs Administrator on / for both user and token.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -5709,7 +5826,8 @@
                                   "fill": "$p-fg-muted",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -5755,7 +5873,8 @@
                                       "content": "(optional)",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -5781,7 +5900,8 @@
                                       "content": "auto",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5836,7 +5956,8 @@
                                       "content": "9000",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5891,7 +6012,8 @@
                                       "content": "vmbr0",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -5924,7 +6046,8 @@
                               "content": "Self-signed certificate",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 13
+                              "fontSize": 13,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -6073,7 +6196,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -6215,7 +6339,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -6273,7 +6398,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -6305,7 +6431,8 @@
                   "content": "Workspaces",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -6315,7 +6442,8 @@
                   "content": "/",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -6408,7 +6536,8 @@
                               "content": "homelab-01 (template 9000 ready)",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "icon",
@@ -6476,7 +6605,8 @@
                               "content": "hackday",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-mono",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -6490,7 +6620,8 @@
                           "content": "a-z, 0-9 and dashes. Also the VM name.",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -6556,7 +6687,8 @@
                                   "content": "(optional)",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -6585,7 +6717,8 @@
                                   "content": "github_pat_...",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -6599,7 +6732,8 @@
                               "content": "Read-only, for private repos. Stored encrypted.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -6636,7 +6770,8 @@
                                   "content": "(optional)",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -6665,7 +6800,8 @@
                                   "content": "https://github.com/dzulfiikar/sandbox-demo",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -6754,7 +6890,8 @@
                                   "content": "ssh-ed25519 AAAAC3Nza... you@laptop",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -6768,7 +6905,8 @@
                               "content": "Added to user dev.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -6868,7 +7006,8 @@
                                   "content": "claude",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -6919,7 +7058,8 @@
                                   "content": "agy",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -7015,7 +7155,8 @@
                                       "content": "2",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "icon",
@@ -7083,7 +7224,8 @@
                                       "content": "2 GB",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "icon",
@@ -7151,7 +7293,8 @@
                                       "content": "20 GB",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "icon",
@@ -7177,7 +7320,8 @@
                           "content": "homelab-01 has 4.6 GB RAM free.",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7317,7 +7461,8 @@
                           "content": "Clone template 9000",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7360,7 +7505,8 @@
                           "content": "Boot, create user dev with your key",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7403,7 +7549,8 @@
                           "content": "Install Node 22, Docker and the agent CLI",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7446,7 +7593,8 @@
                           "content": "Clone the repo to ~/projects",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7489,7 +7637,8 @@
                           "content": "Gemma starts its dev servers on free ports",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7532,7 +7681,8 @@
                           "content": "Show links and the ssh command",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -7544,7 +7694,8 @@
                       "content": "About 3 min for the VM, then 1-6 min per project.",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -7625,7 +7776,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7705,7 +7857,8 @@
                   "content": "Workspaces",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7763,7 +7916,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -7871,7 +8025,8 @@
                   "content": "Gemini key and models for the setup agent. Changes apply to the next project.",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8000,7 +8155,8 @@
                                   "content": "Key ending",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -8010,7 +8166,8 @@
                                   "content": "...cgtg",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8098,7 +8255,8 @@
                                   "content": "AIza...",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8112,7 +8270,8 @@
                               "content": "From Google AI Studio. Stored encrypted.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -8224,7 +8383,8 @@
                               "content": "Key works. 2 Gemma models available.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 14
+                              "fontSize": 14,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -8327,7 +8487,8 @@
                                   "content": "gemma-4-26b-a4b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "icon",
@@ -8351,7 +8512,8 @@
                               "content": "Used for every project setup.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -8399,7 +8561,8 @@
                                   "content": "gemma-4-31b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "icon",
@@ -8423,7 +8586,8 @@
                               "content": "Takes over when the primary hits its rate limit. Pick None to only wait.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -8517,7 +8681,8 @@
                       "content": "From today's runs",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -8645,7 +8810,8 @@
                                   "content": "gemma-4-26b-a4b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8663,7 +8829,8 @@
                                   "content": "16,000",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8681,7 +8848,8 @@
                                   "content": "Waits for the time the API asks, then retries",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -8712,7 +8880,8 @@
                                   "content": "gemma-4-31b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8730,7 +8899,8 @@
                                   "content": "separate quota",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -8748,7 +8918,8 @@
                                   "content": "Used while the primary waits",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -8766,7 +8937,8 @@
                       "content": "A typical repo takes 1-6 min to set up on the free tier. Most of that time is waiting for the limit to reset.",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 13
+                      "fontSize": 13,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -8847,7 +9019,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -8989,7 +9162,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -9047,7 +9221,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -9121,7 +9296,8 @@
                   "content": "A workspace is a VM on your Proxmox host with your repos running in dev mode.",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -9186,7 +9362,8 @@
                               "content": "homelab-01 added",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -9244,7 +9421,8 @@
                               "content": "Not built yet",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -9326,7 +9504,8 @@
                               "content": "Not set",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -9408,7 +9587,8 @@
                   "content": "Available once the template and key are ready.",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -9487,7 +9667,8 @@
                   "content": "homelab-01",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-mono",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -9629,7 +9810,8 @@
                   "content": "Hosts",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -9687,7 +9869,8 @@
                   "content": "Settings",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -9720,7 +9903,8 @@
                   "content": "Workspaces",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -9730,7 +9914,8 @@
                   "content": "/",
                   "lineHeight": 1.5,
                   "fontFamily": "$p-sans",
-                  "fontSize": 14
+                  "fontSize": 14,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -9819,7 +10004,8 @@
                           "content": "VM 102",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -9829,7 +10015,8 @@
                           "content": "192.168.0.15",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -9839,7 +10026,8 @@
                           "content": "homelab-01",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -9849,7 +10037,8 @@
                           "content": "2 projects",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -10013,7 +10202,8 @@
                               "content": "One at a time, no port clashes",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -10111,7 +10301,8 @@
                                       "content": "github.com/dzulfiikar/sandbox-demo",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "text",
@@ -10121,7 +10312,8 @@
                                       "content": "~/projects/sandbox-demo",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -10143,7 +10335,8 @@
                                   "content": "vite, reloads on save",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -10153,7 +10346,8 @@
                                   "content": "http://192.168.0.15:3000",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -10286,7 +10480,8 @@
                                       "content": "github.com/dzulfiikar/notes-api",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     },
                                     {
                                       "type": "text",
@@ -10296,7 +10491,8 @@
                                       "content": "~/projects/notes-api",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -10318,7 +10514,8 @@
                                   "content": "notes-api, reloads on save",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -10328,7 +10525,8 @@
                                   "content": "http://192.168.0.15:3001",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -10438,7 +10636,8 @@
                                   "content": "gemma-4-26b-a4b-it",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "frame",
@@ -10532,7 +10731,8 @@
                                       "content": "Vite app, port 3000 is free. Running it as a systemd service as user dev.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -10614,7 +10814,8 @@
                                               "content": "$ cd /home/dev/projects/sandbox-demo && sudo -u dev npm install",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -10624,7 +10825,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -10638,7 +10840,8 @@
                                           "content": "found 0 vulnerabilities",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -10722,7 +10925,8 @@
                                               "content": "$ systemctl daemon-reload && systemctl enable --now sandbox-demo-web.service",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -10732,7 +10936,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -10746,7 +10951,8 @@
                                           "content": "Created symlink /etc/systemd/system/multi-user.target.wants/sandbox-demo-web.service",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -10830,7 +11036,8 @@
                                               "content": "$ sleep 5 && ss -ltnp | grep 3000",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12.5
+                                              "fontSize": 12.5,
+                                              "fontWeight": "normal"
                                             },
                                             {
                                               "type": "text",
@@ -10840,7 +11047,8 @@
                                               "content": "exit 0",
                                               "lineHeight": 1.5,
                                               "fontFamily": "$p-mono",
-                                              "fontSize": 12
+                                              "fontSize": 12,
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
@@ -10854,7 +11062,8 @@
                                           "content": "LISTEN 0 511 0.0.0.0:3000 users:((\"node\",pid=8869,fd=25))",
                                           "lineHeight": 1.5,
                                           "fontFamily": "$p-mono",
-                                          "fontSize": 12
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -10914,7 +11123,8 @@
                                       "content": "Live at 192.168.0.15:3000 with hot reload.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-sans",
-                                      "fontSize": 14
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -11024,7 +11234,8 @@
                                       "content": "ssh -A dev@192.168.0.15",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$p-mono",
-                                      "fontSize": 12.5
+                                      "fontSize": 12.5,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -11103,7 +11314,8 @@
                               "content": "-A lets git push use your SSH key. No push token in the VM.",
                               "lineHeight": 1.5,
                               "fontFamily": "$p-sans",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -11184,7 +11396,8 @@
                                   "content": "Host",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -11194,7 +11407,8 @@
                                   "content": "homelab-01 (pve)",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11213,7 +11427,8 @@
                                   "content": "Template",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -11223,7 +11438,8 @@
                                   "content": "9000, Ubuntu 24.04",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11242,7 +11458,8 @@
                                   "content": "Size",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -11252,7 +11469,8 @@
                                   "content": "2 vCPU, 2 GB RAM, 20 GB",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11271,7 +11489,8 @@
                                   "content": "Agent CLI",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -11281,7 +11500,8 @@
                                   "content": "Claude Code 2.1.316",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11300,7 +11520,8 @@
                                   "content": "GitHub token",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -11310,7 +11531,8 @@
                                   "content": "read-only",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-mono",
-                                  "fontSize": 12.5
+                                  "fontSize": 12.5,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -11403,7 +11625,8 @@
                                   "content": "Cloned template 9000",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11432,7 +11655,8 @@
                                   "content": "Booted, user dev created",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11461,7 +11685,8 @@
                                   "content": "IP 192.168.0.15",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11490,7 +11715,8 @@
                                   "content": "Node 22, Docker, git installed",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -11519,7 +11745,8 @@
                                   "content": "Claude Code installed",
                                   "lineHeight": 1.5,
                                   "fontFamily": "$p-sans",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -11678,7 +11905,8 @@
                           "content": "https://github.com/dzulfiikar/status-page",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -11717,7 +11945,8 @@
                           "content": "(optional)",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -11743,7 +11972,8 @@
                           "content": "status-page",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -11757,7 +11987,8 @@
                       "content": "Cloned to ~/projects/status-page.",
                       "lineHeight": 1.5,
                       "fontFamily": "$p-sans",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -11802,7 +12033,8 @@
                           "content": "Ports in use: 3000 (sandbox-demo), 3001 (notes-api)",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-mono",
-                          "fontSize": 12.5
+                          "fontSize": 12.5,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -11812,7 +12044,8 @@
                           "content": "Gemma picks a free one. Uses the workspace's GitHub token.",
                           "lineHeight": 1.5,
                           "fontFamily": "$p-sans",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
