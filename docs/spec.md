@@ -20,13 +20,30 @@ Local web app that turns a Proxmox host into on-demand sandbox VMs for working o
 | Service | A named port a project exposes, verified reachable by the server |
 | Event | A log line for a workspace (VM steps) or a project (agent commands) |
 
+### Words used in code
+
+One idea, one word, in the server, the web client and the controllers alike. UI copy can differ ("Add host").
+
+| Word | Use for |
+|---|---|
+| `create` / `delete` | Making or removing a host, workspace or project (service, controller, repository and web client methods) |
+| `find*` / `get*` | `find*` may return `undefined`; `get*` returns the thing or throws |
+| `list*` | Several rows, e.g. `listByWorkspace` |
+| `check*` | The host readiness checklist (`checkUnsavedHost`, `checkSavedHost`) |
+| `test*` | One live call to an outside service (`testConnection` for Proxmox, `testGeminiApiKey`) |
+| `busyStatuses` | Statuses that mean a background job is still running |
+| `<action><Thing>Body` | Zod schema for a request body, e.g. `createHostBody` |
+| `to*Response` | Pure function from a database record to an API type |
+
+API fields, database columns, status strings and event types keep their names (`repoUrl`, `vmid`, `memoryMb`, `agentClis`) even where the word is short. Code derived from them uses full words (`repositoryPath`).
+
 Projects in one workspace are set up **one at a time** (a per-workspace queue) so the agent always knows which ports are taken.
 
 ## Stack and layout
 
 - `server/`: Node 22+, TypeScript, Express 5, Zod, Drizzle ORM on PostgreSQL 17 (`pg`, `DATABASE_URL`), `@google/genai`, `undici` (per-host TLS dispatcher). Port `8787`.
-- `server/src` is layered: `routes/` (Express, SSE) → `controllers/` (Zod input, no req/res) → `services/` (business rules, background jobs) → `repositories/` (the only database access), plus `integrations/` (Proxmox, Gemini, cloud-init ISO), `infrastructure/` (config, database, encryption, event bus, HTTP app) and `shared/` (API types, errors, helpers). Services throw `NotFoundError`/`ConflictError`/`InvalidInputError`; the HTTP app maps them to 404/409/400 `{ message }`.
-- `web/`: Vite, React, TypeScript, Tailwind CSS v4. Dev proxy `/api` to `http://localhost:8787`.
+- `server/src` is grouped by feature: `features/{hosts,workspaces,projects,events,settings}/`. Each feature folder holds `*-routes.ts` (URL to handler map), `*-controller.ts` (Express handlers: parse the body with Zod, call the service, send the status code), `*-service.ts` (business rules, background jobs) and `*-repository.ts` (the only database access). Outside the features: `integrations/` (Proxmox, Gemini client, cloud-init ISO), `infrastructure/` (config, database, encryption, HTTP app) and `shared/` (API types, errors, small helpers). A feature may call another feature's service and read its repository; writes go through the owning service. Services throw `NotFoundError`/`ConflictError`/`InvalidInputError`; the HTTP app maps them to 404/409/400 `{ message }`.
+- `web/`: Vite, React, TypeScript, Tailwind CSS v4. Dev proxy `/api` to `http://localhost:8787`. `web/src` has `features/{hosts,workspaces,projects,settings}/` (pages, their components and a `*-api.ts` client each) and `shared/` (fetch client, router, hooks, formatters, shared components). Web imports the API types from `server/src/shared/api-types.ts` with `import type` only, so the Docker web stage still builds from `web/` alone.
 - Two independent npm packages (no npm workspaces). Root `package.json` only has scripts:
   - `typecheck`: `npm --prefix server run typecheck && npm --prefix web run typecheck`
   - `lint`: `oxlint`
@@ -125,7 +142,7 @@ Delete: `POST .../status/stop` (ignore if already stopped), poll task, `DELETE /
 3. `verifying`: for each reported service, TCP connect to `ip:port` from the server, retry every 5 s for 60 s. If any fail, give the agent one more round with the failure, then verify again.
 4. `ready` with services, or `failed` with an error message.
 
-## Agent loop (`server/src/integrations/gemini/setup-agent.ts`, `gemini-client.ts`)
+## Agent loop (`server/src/features/projects/project-setup-agent.ts`, `server/src/integrations/gemini/gemini-client.ts`)
 
 - `@google/genai`: `new GoogleGenAI({ apiKey })` with the key and models read from settings when the session starts, `ai.models.generateContent({ model, contents, config: { systemInstruction, tools: [{ functionDeclarations }] } })`, read `response.functionCalls`, append the model turn and a `functionResponse` part per call, loop.
 - Tools:
