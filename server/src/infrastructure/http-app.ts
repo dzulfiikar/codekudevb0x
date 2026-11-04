@@ -2,9 +2,9 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import express, { type ErrorRequestHandler } from "express";
 import { z } from "zod";
-import { hostRoutes } from "../routes/host-routes.js";
-import { settingsRoutes } from "../routes/settings-routes.js";
-import { workspaceRoutes } from "../routes/workspace-routes.js";
+import { hostRoutes } from "../features/hosts/host-routes.js";
+import { settingsRoutes } from "../features/settings/settings-routes.js";
+import { workspaceRoutes } from "../features/workspaces/workspace-routes.js";
 import { ConflictError, HostNotReadyError, InvalidInputError, NotFoundError } from "../shared/errors.js";
 
 const handleError: ErrorRequestHandler = (error: unknown, _request, response, _next) => {

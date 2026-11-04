@@ -1,17 +1,20 @@
 import { CubeIcon, GearSixIcon, HardDrivesIcon, StackIcon, type Icon } from "@phosphor-icons/react";
 import { useContext, useEffect } from "react";
-import { api } from "./api";
-import { HostsPage } from "./pages/HostsPage";
-import { NewWorkspacePage } from "./pages/NewWorkspacePage";
-import { SettingsPage } from "./pages/SettingsPage";
-import { WorkspaceDetailPage } from "./pages/WorkspaceDetailPage";
-import { WorkspacesPage } from "./pages/WorkspacesPage";
-import { Link, navigate, usePath } from "./router";
-import { HostsContext, StatusLabel, useResource } from "./ui";
+import { HostsContext } from "./features/hosts/HostsContext";
+import { hostsApi } from "./features/hosts/hosts-api";
+import { HostsPage } from "./features/hosts/HostsPage";
+import { SettingsPage } from "./features/settings/SettingsPage";
+import { NewWorkspacePage } from "./features/workspaces/NewWorkspacePage";
+import { WorkspaceDetailPage } from "./features/workspaces/WorkspaceDetailPage";
+import { WorkspacesPage } from "./features/workspaces/WorkspacesPage";
+import { workspacesApi } from "./features/workspaces/workspaces-api";
+import { StatusLabel } from "./shared/components/StatusLabel";
+import { Link, navigate, usePath } from "./shared/router";
+import { useResource } from "./shared/use-resource";
 
 export function App() {
   const path = usePath();
-  const hosts = useResource(api.listHosts, "hosts");
+  const hosts = useResource(hostsApi.list, "hosts");
 
   useEffect(() => {
     if (path === "/") navigate("/workspaces", { replace: true });
@@ -53,7 +56,7 @@ const navItems: { href: string; label: string; icon: Icon; counter?: "workspaces
 
 function TopBar({ path }: { path: string }) {
   const hosts = useContext(HostsContext);
-  const workspaces = useResource(api.listWorkspaces, `workspaces-${path}`);
+  const workspaces = useResource(workspacesApi.list, `workspaces-${path}`);
   const counts = { workspaces: workspaces.data?.length, hosts: hosts?.data?.length };
   return (
     <header className="border-b border-line bg-inset">
