@@ -1,6 +1,7 @@
 import { Agent, fetch, FormData } from "undici";
 import { z } from "zod";
-import { type CommandResult, sleep } from "../../shared/shell.js";
+import type { CommandResult } from "../../shared/shell.js";
+import { sleep } from "../../shared/sleep.js";
 
 export type ProxmoxConnection = {
   baseUrl: string;

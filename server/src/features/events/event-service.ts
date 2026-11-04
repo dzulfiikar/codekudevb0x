@@ -3,7 +3,7 @@ import { eventRepository } from "./event-repository.js";
 import type { Event, EventBody } from "../../shared/api-types.js";
 import type { CommandResult } from "../../shared/shell.js";
 
-class WorkspaceEventService {
+class EventService {
   async record(workspaceId: string, projectId: string | null, body: EventBody) {
     const event = await eventRepository.create(workspaceId, projectId, body);
     eventBus.publish(workspaceId, event);
@@ -32,9 +32,9 @@ class WorkspaceEventService {
     return eventBus.subscribe(workspaceId, listener);
   }
 
-  deleteForWorkspace(workspaceId: string) {
+  deleteByWorkspace(workspaceId: string) {
     return eventRepository.deleteByWorkspace(workspaceId);
   }
 }
 
-export const workspaceEventService = new WorkspaceEventService();
+export const eventService = new EventService();

@@ -1,5 +1,5 @@
 import { type Content, type FunctionDeclaration, GoogleGenAI } from "@google/genai";
-import { sleep } from "../../shared/shell.js";
+import { sleep } from "../../shared/sleep.js";
 
 export type GemmaModel = { id: string; displayName: string };
 

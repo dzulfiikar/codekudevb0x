@@ -2,7 +2,8 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { ProxmoxClient } from "../src/integrations/proxmox/proxmox-client.js";
 import type { Host, Workspace } from "../src/shared/api-types.js";
-import { quoteForShell, sleep } from "../src/shared/shell.js";
+import { quoteForShell } from "../src/shared/shell.js";
+import { sleep } from "../src/shared/sleep.js";
 
 const baseUrl = process.env.E2E_BASE_URL ?? "http://localhost:8787";
 const reportPath = resolve(process.cwd(), "../e2e-report.json");

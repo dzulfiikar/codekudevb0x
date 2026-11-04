@@ -1,13 +1,9 @@
+import type { Request, Response } from "express";
 import { z } from "zod";
+import { optionalText } from "../../shared/validation.js";
 import { hostService } from "./host-service.js";
 
-const optionalText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => value || undefined);
-
-const newHostBody = z.object({
+const createHostBody = z.object({
   name: z.string().trim().min(1).max(80),
   baseUrl: z.url({ protocol: /^https?$/ }),
   tokenId: z.string().trim().regex(/^[^@\s]+@[^!\s]+![^\s]+$/, "Token ID looks like user@realm!tokenname"),
@@ -18,36 +14,38 @@ const newHostBody = z.object({
   allowSelfSigned: z.boolean().default(false),
 });
 
-const hostCheckBody = newHostBody.omit({ name: true });
+const checkHostBody = createHostBody.omit({ name: true });
 
 class HostController {
-  list() {
-    return hostService.list();
-  }
+  list = async (_request: Request, response: Response) => {
+    response.json(await hostService.list());
+  };
 
-  add(body: unknown) {
-    return hostService.add(newHostBody.parse(body));
-  }
+  create = async (request: Request, response: Response) => {
+    response.status(201).json(await hostService.create(createHostBody.parse(request.body)));
+  };
 
-  checkUnsavedHost(body: unknown) {
-    return hostService.checkUnsavedHost(hostCheckBody.parse(body));
-  }
+  checkUnsavedHost = async (request: Request, response: Response) => {
+    response.json(await hostService.checkUnsavedHost(checkHostBody.parse(request.body)));
+  };
 
-  remove(hostId: string) {
-    return hostService.remove(hostId);
-  }
+  delete = async (request: Request<{ id: string }>, response: Response) => {
+    await hostService.delete(request.params.id);
+    response.status(204).end();
+  };
 
-  testConnection(hostId: string) {
-    return hostService.testConnection(hostId);
-  }
+  testConnection = async (request: Request<{ id: string }>, response: Response) => {
+    response.json(await hostService.testConnection(request.params.id));
+  };
 
-  checkSavedHost(hostId: string) {
-    return hostService.checkSavedHost(hostId);
-  }
+  checkSavedHost = async (request: Request<{ id: string }>, response: Response) => {
+    response.json(await hostService.checkSavedHost(request.params.id));
+  };
 
-  startTemplatePreparation(hostId: string) {
-    return hostService.startTemplatePreparation(hostId);
-  }
+  startTemplatePreparation = async (request: Request<{ id: string }>, response: Response) => {
+    await hostService.startTemplatePreparation(request.params.id);
+    response.status(202).end();
+  };
 }
 
 export const hostController = new HostController();

@@ -4,9 +4,9 @@ import { hostRepository, type HostRecord } from "./host-repository.js";
 import { workspaceRepository } from "../workspaces/workspace-repository.js";
 import type { Host, TemplateStatus } from "../../shared/api-types.js";
 import { ConflictError, HostNotReadyError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
-import { type HostCheckInput, hostReadinessService } from "./host-readiness-check.js";
+import { checkHostReadiness, type HostCheckInput } from "./host-readiness-check.js";
 
-type NewHostInput = HostCheckInput & { name: string };
+type CreateHostInput = HostCheckInput & { name: string };
 
 const imageStorage = "local";
 const cloudImageFilename = "noble-server-cloudimg-amd64.qcow2";
@@ -31,7 +31,7 @@ function toHostResponse(record: HostRecord): Host {
   };
 }
 
-async function detectHostSettings(connection: Omit<ProxmoxConnection, "node"> & { node?: string }, templateVmid: number) {
+async function detectHostDetails(connection: Omit<ProxmoxConnection, "node"> & { node?: string }, templateVmid: number) {
   const clusterClient = new ProxmoxClient({ ...connection, node: "" });
   const version = await clusterClient.getVersion();
   const node = connection.node ?? (await clusterClient.listNodeStatuses())[0]?.node;
@@ -61,21 +61,21 @@ class HostService {
   }
 
   checkUnsavedHost(input: HostCheckInput) {
-    return hostReadinessService.checkHost(input);
+    return checkHostReadiness(input);
   }
 
-  async add(input: NewHostInput) {
-    const check = await hostReadinessService.checkHost(input);
+  async create(input: CreateHostInput) {
+    const check = await checkHostReadiness(input);
     if (!check.ready) throw new HostNotReadyError(check);
-    let settings: Awaited<ReturnType<typeof detectHostSettings>>;
+    let details: Awaited<ReturnType<typeof detectHostDetails>>;
     try {
-      settings = await detectHostSettings(input, input.templateVmid);
+      details = await detectHostDetails(input, input.templateVmid);
     } catch (error) {
       throw new InvalidInputError(`Could not connect to Proxmox: ${toErrorMessage(error)}`);
     }
     const record = await hostRepository.create({
       ...input,
-      ...settings,
+      ...details,
       id: crypto.randomUUID(),
       tokenSecret: encrypt(input.tokenSecret),
       lastCheck: check,
@@ -84,7 +84,7 @@ class HostService {
     return toHostResponse(record);
   }
 
-  async remove(hostId: string) {
+  async delete(hostId: string) {
     const record = await this.getHostRecord(hostId);
     if (await workspaceRepository.hasWorkspacesOnHost(record.id)) {
       throw new ConflictError("Delete the workspaces on this host first");
@@ -106,7 +106,7 @@ class HostService {
 
   async checkSavedHost(hostId: string) {
     const record = await this.getHostRecord(hostId);
-    const check = await hostReadinessService.checkHost({ ...record, tokenSecret: decrypt(record.tokenSecret) });
+    const check = await checkHostReadiness({ ...record, tokenSecret: decrypt(record.tokenSecret) });
     await hostRepository.update(record.id, { lastCheck: check });
     return check;
   }

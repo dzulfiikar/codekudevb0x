@@ -7,12 +7,13 @@ import type { Project, ProjectStatus, Service } from "../../shared/api-types.js"
 import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
 import { isTcpPortOpen } from "../../shared/network.js";
 import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns.js";
-import { quoteForShell, sleep } from "../../shared/shell.js";
+import { quoteForShell } from "../../shared/shell.js";
+import { sleep } from "../../shared/sleep.js";
 import { hostService } from "../hosts/host-service.js";
 import { settingsService } from "../settings/settings-service.js";
-import { workspaceEventService } from "../events/event-service.js";
+import { eventService } from "../events/event-service.js";
 
-const unfinishedStatuses: ProjectStatus[] = ["queued", "cloning_repo", "configuring_services", "verifying"];
+const busyStatuses: ProjectStatus[] = ["queued", "cloning_repo", "configuring_services", "verifying"];
 
 function toProjectResponse(record: ProjectRecord): Project {
   return {
@@ -59,18 +60,13 @@ function checkServices(ip: string, reported: ReportedService[]): Promise<Service
 class ProjectService {
   private readonly setupQueues = new Map<string, Promise<void>>();
 
-  async listForWorkspace(workspaceId: string) {
+  async listByWorkspace(workspaceId: string) {
     return (await projectRepository.listByWorkspace(workspaceId)).map(toProjectResponse);
   }
 
-  async getRunningWorkspace(workspaceId: string) {
-    const workspace = await workspaceRepository.findById(workspaceId);
-    if (!workspace) throw new NotFoundError("Workspace not found");
-    if (workspace.status !== "running") throw new ConflictError("The workspace VM is not running yet");
-    return workspace;
-  }
+  async create(workspaceId: string, input: { repoUrl: string; name?: string }) {
+    await this.getRunningWorkspace(workspaceId);
 
-  async add(workspaceId: string, input: { repoUrl: string; name?: string }) {
     if (!githubRepositoryUrlPattern.test(input.repoUrl)) {
       throw new InvalidInputError(`Not a GitHub repository URL: ${input.repoUrl}`);
     }
@@ -94,26 +90,34 @@ class ProjectService {
         createdAt: new Date().toISOString(),
       }),
     );
-    await workspaceEventService.record(workspaceId, project.id, { type: "status", status: "queued" });
+    await eventService.record(workspaceId, project.id, { type: "status", status: "queued" });
     const previousSetup = this.setupQueues.get(workspaceId) ?? Promise.resolve();
     this.setupQueues.set(workspaceId, previousSetup.then(() => this.runSetup(project)));
     return project;
   }
 
-  clearQueue(workspaceId: string) {
+  async deleteByWorkspace(workspaceId: string) {
+    await projectRepository.deleteByWorkspace(workspaceId);
     this.setupQueues.delete(workspaceId);
   }
 
   async failInterruptedSetups() {
-    for (const record of await projectRepository.listByStatuses(unfinishedStatuses)) {
+    for (const record of await projectRepository.listByStatuses(busyStatuses)) {
       await this.setStatus(toProjectResponse(record), "failed", "Server restarted during setup");
     }
   }
 
+  private async getRunningWorkspace(workspaceId: string) {
+    const workspace = await workspaceRepository.findById(workspaceId);
+    if (!workspace) throw new NotFoundError("Workspace not found");
+    if (workspace.status !== "running") throw new ConflictError("The workspace VM is not running yet");
+    return workspace;
+  }
+
   private async setStatus(project: Project, status: ProjectStatus, error: string | null = null) {
     await projectRepository.update(project.id, { status, error });
-    await workspaceEventService.record(project.workspaceId, project.id, { type: "status", status });
-    if (error) await workspaceEventService.record(project.workspaceId, project.id, { type: "error", message: error });
+    await eventService.record(project.workspaceId, project.id, { type: "status", status });
+    if (error) await eventService.record(project.workspaceId, project.id, { type: "error", message: error });
   }
 
   private async findUsedPorts(workspaceId: string, exceptProjectId: string) {
@@ -161,7 +165,7 @@ class ProjectService {
         stdout: redactToken(cloneResult.stdout),
         stderr: redactToken(cloneResult.stderr),
       };
-      await workspaceEventService.recordCommand(
+      await eventService.recordCommand(
         project.workspaceId,
         project.id,
         `git clone https://github.com/${repositoryPath}.git ${projectPath}`,
@@ -182,17 +186,17 @@ class ProjectService {
               stdout: "",
               stderr: `${toErrorMessage(error)}. Long-lived processes must run as systemd units, not in the foreground.`,
             }));
-          await workspaceEventService.recordCommand(project.workspaceId, project.id, command, result);
+          await eventService.recordCommand(project.workspaceId, project.id, command, result);
           return result;
         },
         onAgentMessage: (message) =>
-          void workspaceEventService.record(project.workspaceId, project.id, { type: "agent", message }),
+          void eventService.record(project.workspaceId, project.id, { type: "agent", message }),
       });
 
       let reported = await agent.run(`Set up the project "${project.name}" at ${projectPath} and start its services.`);
       await this.setStatus(project, "verifying");
       let services = await checkServices(ip, reported);
-      await workspaceEventService.record(project.workspaceId, project.id, { type: "services", services });
+      await eventService.record(project.workspaceId, project.id, { type: "services", services });
 
       const unreachable = services.filter((service) => !service.reachable);
       if (unreachable.length) {
@@ -203,7 +207,7 @@ class ProjectService {
         );
         await this.setStatus(project, "verifying");
         services = await checkServices(ip, reported);
-        await workspaceEventService.record(project.workspaceId, project.id, { type: "services", services });
+        await eventService.record(project.workspaceId, project.id, { type: "services", services });
       }
 
       await projectRepository.update(project.id, { services });

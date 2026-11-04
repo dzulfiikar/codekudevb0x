@@ -1,16 +1,16 @@
 import { encrypt } from "../../infrastructure/encryption.js";
 import { buildSeedIso } from "../../integrations/cloud-init/seed-iso-builder.js";
 import type { ProxmoxClient } from "../../integrations/proxmox/proxmox-client.js";
-import { projectRepository } from "../projects/project-repository.js";
 import { workspaceRepository, type WorkspaceRecord } from "./workspace-repository.js";
-import type { Workspace, WorkspaceStatus } from "../../shared/api-types.js";
+import type { Project, Workspace, WorkspaceStatus } from "../../shared/api-types.js";
 import { ConflictError, InvalidInputError, NotFoundError, toErrorMessage } from "../../shared/errors.js";
-import { quoteForShell, sleep } from "../../shared/shell.js";
+import { quoteForShell } from "../../shared/shell.js";
+import { sleep } from "../../shared/sleep.js";
 import { hostService } from "../hosts/host-service.js";
 import { projectService } from "../projects/project-service.js";
-import { workspaceEventService } from "../events/event-service.js";
+import { eventService } from "../events/event-service.js";
 
-type NewWorkspaceInput = {
+type CreateWorkspaceInput = {
   hostId: string;
   name: string;
   githubToken?: string;
@@ -36,6 +36,25 @@ const requiredSetupCommands = [
 const isoStorage = "local";
 const seedIsoFilename = (vmid: number) => `workspace-${vmid}-seed.iso`;
 
+function toWorkspaceResponse(record: WorkspaceRecord, projects: Project[]): Workspace {
+  return {
+    id: record.id,
+    hostId: record.hostId,
+    name: record.name,
+    vmid: record.vmid,
+    ip: record.ip,
+    status: record.status,
+    agentClis: record.agentClis,
+    cores: record.cores,
+    memoryMb: record.memoryMb,
+    diskGb: record.diskGb,
+    hasGithubToken: record.githubToken !== null,
+    error: record.error,
+    projects,
+    createdAt: record.createdAt,
+  };
+}
+
 async function waitForIp(proxmox: ProxmoxClient, vmid: number) {
   const deadline = Date.now() + 300_000;
   while (Date.now() < deadline) {
@@ -49,14 +68,18 @@ async function waitForIp(proxmox: ProxmoxClient, vmid: number) {
 class WorkspaceService {
   async list() {
     const records = await workspaceRepository.list();
-    return Promise.all(records.map((record) => this.toWorkspaceResponse(record)));
+    return Promise.all(
+      records.map(async (record) => toWorkspaceResponse(record, await projectService.listByWorkspace(record.id))),
+    );
   }
 
   async get(workspaceId: string) {
-    return this.toWorkspaceResponse(await this.getRecord(workspaceId));
+    const record = await this.getRecord(workspaceId);
+
+    return toWorkspaceResponse(record, await projectService.listByWorkspace(record.id));
   }
 
-  async create(input: NewWorkspaceInput) {
+  async create(input: CreateWorkspaceInput) {
     const { firstProjectRepoUrl, githubToken, ...fields } = input;
     const host = await hostService.findHostRecord(fields.hostId);
     if (!host) throw new InvalidInputError("Host not found. Add a Proxmox host first.");
@@ -74,10 +97,10 @@ class WorkspaceService {
       createdAt: new Date().toISOString(),
     });
     void this.runSetup(record.id, firstProjectRepoUrl);
-    return this.toWorkspaceResponse(record);
+    return toWorkspaceResponse(record, await projectService.listByWorkspace(record.id));
   }
 
-  async remove(workspaceId: string) {
+  async delete(workspaceId: string) {
     const record = await this.getRecord(workspaceId);
     if (busyStatuses.includes(record.status)) {
       throw new ConflictError("Wait for the current setup step to finish, then delete");
@@ -97,33 +120,14 @@ class WorkspaceService {
     return record;
   }
 
-  private async toWorkspaceResponse(record: WorkspaceRecord): Promise<Workspace> {
-    return {
-      id: record.id,
-      hostId: record.hostId,
-      name: record.name,
-      vmid: record.vmid,
-      ip: record.ip,
-      status: record.status,
-      agentClis: record.agentClis,
-      cores: record.cores,
-      memoryMb: record.memoryMb,
-      diskGb: record.diskGb,
-      hasGithubToken: record.githubToken !== null,
-      error: record.error,
-      projects: await projectService.listForWorkspace(record.id),
-      createdAt: record.createdAt,
-    };
-  }
-
   private async setStatus(workspaceId: string, status: WorkspaceStatus, error: string | null = null) {
     await workspaceRepository.update(workspaceId, { status, error });
-    await workspaceEventService.record(workspaceId, null, { type: "status", status });
-    if (error) await workspaceEventService.record(workspaceId, null, { type: "error", message: error });
+    await eventService.record(workspaceId, null, { type: "status", status });
+    if (error) await eventService.record(workspaceId, null, { type: "error", message: error });
   }
 
   private log(workspaceId: string, message: string) {
-    return workspaceEventService.record(workspaceId, null, { type: "log", message });
+    return eventService.record(workspaceId, null, { type: "log", message });
   }
 
   private async runSetup(workspaceId: string, firstProjectRepoUrl?: string) {
@@ -169,7 +173,7 @@ class WorkspaceService {
       await this.setStatus(workspaceId, "installing_tools");
       const runRecorded = async (command: string) => {
         const result = await proxmox.runInGuest(vmid, ["bash", "-c", command]);
-        await workspaceEventService.recordCommand(workspaceId, null, command, result);
+        await eventService.recordCommand(workspaceId, null, command, result);
         return result;
       };
       await runRecorded("cloud-init status --wait || true");
@@ -178,7 +182,7 @@ class WorkspaceService {
         if (result.exitCode !== 0) throw new Error(`Setup command failed: ${command}`);
       }
       if ((await runRecorded("usermod -aG docker dev")).exitCode !== 0) {
-        await workspaceEventService.record(workspaceId, null, {
+        await eventService.record(workspaceId, null, {
           type: "error",
           message: "Could not add dev to the docker group. Is Docker installed in the template?",
         });
@@ -188,7 +192,7 @@ class WorkspaceService {
         if (!installCommand) continue;
         const result = await runRecorded(`sudo -iu dev bash -lc ${quoteForShell(installCommand)}`);
         if (result.exitCode !== 0) {
-          await workspaceEventService.record(workspaceId, null, { type: "error", message: `Installing ${cli} failed` });
+          await eventService.record(workspaceId, null, { type: "error", message: `Installing ${cli} failed` });
         }
       }
 
@@ -203,10 +207,10 @@ class WorkspaceService {
 
   private async addFirstProject(workspaceId: string, repoUrl: string) {
     try {
-      await projectService.add(workspaceId, { repoUrl });
+      await projectService.create(workspaceId, { repoUrl });
     } catch (error) {
       if (!(error instanceof InvalidInputError)) throw error;
-      await workspaceEventService.record(workspaceId, null, { type: "error", message: error.message });
+      await eventService.record(workspaceId, null, { type: "error", message: error.message });
     }
   }
 
@@ -214,12 +218,11 @@ class WorkspaceService {
     try {
       const workspace = await this.getRecord(workspaceId);
       await this.setStatus(workspaceId, "deleting");
-      if (workspace.vmid !== null) await this.removeVm(workspace, workspace.vmid);
+      if (workspace.vmid !== null) await this.deleteVm(workspace, workspace.vmid);
       await this.log(workspaceId, "Workspace deleted");
-      await workspaceEventService.deleteForWorkspace(workspaceId);
-      await projectRepository.deleteByWorkspace(workspaceId);
+      await eventService.deleteByWorkspace(workspaceId);
+      await projectService.deleteByWorkspace(workspaceId);
       await workspaceRepository.delete(workspaceId);
-      projectService.clearQueue(workspaceId);
     } catch (error) {
       if (await workspaceRepository.findById(workspaceId)) {
         await this.setStatus(workspaceId, "failed", `Delete failed: ${toErrorMessage(error)}`);
@@ -227,7 +230,7 @@ class WorkspaceService {
     }
   }
 
-  private async removeVm(workspace: WorkspaceRecord, vmid: number) {
+  private async deleteVm(workspace: WorkspaceRecord, vmid: number) {
     const proxmox = await hostService.getProxmoxClient(workspace.hostId);
     // Proxmox reuses VM IDs, so only touch the VM and its seed ISO if the VM still carries this workspace's name.
     const vm = await proxmox.findVm(vmid);

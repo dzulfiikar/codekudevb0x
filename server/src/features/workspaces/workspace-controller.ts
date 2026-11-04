@@ -1,16 +1,10 @@
+import type { Request, Response } from "express";
 import { z } from "zod";
-import type { Event } from "../../shared/api-types.js";
 import { githubRepositoryUrlPattern, resourceNamePattern } from "../../shared/patterns.js";
-import { workspaceEventService } from "../events/event-service.js";
+import { optionalText } from "../../shared/validation.js";
 import { workspaceService } from "./workspace-service.js";
 
-const optionalText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => value || undefined);
-
-const newWorkspaceBody = z.object({
+const createWorkspaceBody = z.object({
   hostId: z.string().min(1),
   name: z.string().trim().regex(resourceNamePattern, "Use lowercase letters, digits and dashes (max 40)"),
   githubToken: optionalText,
@@ -28,29 +22,22 @@ const newWorkspaceBody = z.object({
 });
 
 class WorkspaceController {
-  list() {
-    return workspaceService.list();
-  }
+  list = async (_request: Request, response: Response) => {
+    response.json(await workspaceService.list());
+  };
 
-  get(workspaceId: string) {
-    return workspaceService.get(workspaceId);
-  }
+  get = async (request: Request<{ id: string }>, response: Response) => {
+    response.json(await workspaceService.get(request.params.id));
+  };
 
-  create(body: unknown) {
-    return workspaceService.create(newWorkspaceBody.parse(body));
-  }
+  create = async (request: Request, response: Response) => {
+    response.status(202).json(await workspaceService.create(createWorkspaceBody.parse(request.body)));
+  };
 
-  remove(workspaceId: string) {
-    return workspaceService.remove(workspaceId);
-  }
-
-  listEventsAfter(workspaceId: string, afterId: number) {
-    return workspaceEventService.listAfter(workspaceId, afterId);
-  }
-
-  subscribeToEvents(workspaceId: string, listener: (event: Event) => void) {
-    return workspaceEventService.subscribe(workspaceId, listener);
-  }
+  delete = async (request: Request<{ id: string }>, response: Response) => {
+    await workspaceService.delete(request.params.id);
+    response.status(202).end();
+  };
 }
 
 export const workspaceController = new WorkspaceController();

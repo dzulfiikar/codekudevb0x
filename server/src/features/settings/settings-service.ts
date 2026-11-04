@@ -47,7 +47,7 @@ class SettingsService {
     }
   }
 
-  async getSettings(): Promise<Settings> {
+  async get(): Promise<Settings> {
     const gemini = await this.findGeminiSettings();
     return {
       geminiApiKeySource: gemini.apiKey ? "database" : "none",
@@ -58,7 +58,7 @@ class SettingsService {
     };
   }
 
-  async saveSettings(input: { geminiApiKey?: string; primaryModel: string; fallbackModel: string | null }) {
+  async save(input: { geminiApiKey?: string; primaryModel: string; fallbackModel: string | null }) {
     const activeApiKey =
       input.geminiApiKey === undefined ? (await this.findGeminiSettings()).apiKey : input.geminiApiKey || undefined;
     const availableIds = (await this.listAvailableModels(activeApiKey)).map((model) => model.id);
@@ -72,10 +72,10 @@ class SettingsService {
     let geminiApiKey = record?.geminiApiKey ?? null;
     if (input.geminiApiKey !== undefined) geminiApiKey = input.geminiApiKey ? encrypt(input.geminiApiKey) : null;
     await settingsRepository.save({ geminiApiKey, primaryModel: input.primaryModel, fallbackModel: input.fallbackModel });
-    return this.getSettings();
+    return this.get();
   }
 
-  async testApiKey(apiKey: string | undefined) {
+  async testGeminiApiKey(apiKey: string | undefined) {
     const keyToTest = apiKey ?? (await this.findGeminiSettings()).apiKey;
     if (!keyToTest) return { ok: false, message: "No Gemini API key is stored. Paste one to test it." } as const;
     try {

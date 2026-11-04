@@ -1,4 +1,6 @@
+import type { Request, Response } from "express";
 import { z } from "zod";
+import { optionalText } from "../../shared/validation.js";
 import { settingsService } from "./settings-service.js";
 
 const saveSettingsBody = z.object({
@@ -7,26 +9,22 @@ const saveSettingsBody = z.object({
   fallbackModel: z.string().trim().min(1).nullable(),
 });
 
-const testApiKeyBody = z.object({
-  geminiApiKey: z
-    .string()
-    .trim()
-    .optional()
-    .transform((value) => value || undefined),
+const testGeminiApiKeyBody = z.object({
+  geminiApiKey: optionalText,
 });
 
 class SettingsController {
-  get() {
-    return settingsService.getSettings();
-  }
+  get = async (_request: Request, response: Response) => {
+    response.json(await settingsService.get());
+  };
 
-  save(body: unknown) {
-    return settingsService.saveSettings(saveSettingsBody.parse(body));
-  }
+  save = async (request: Request, response: Response) => {
+    response.json(await settingsService.save(saveSettingsBody.parse(request.body)));
+  };
 
-  testApiKey(body: unknown) {
-    return settingsService.testApiKey(testApiKeyBody.parse(body ?? {}).geminiApiKey);
-  }
+  testGeminiApiKey = async (request: Request, response: Response) => {
+    response.json(await settingsService.testGeminiApiKey(testGeminiApiKeyBody.parse(request.body ?? {}).geminiApiKey));
+  };
 }
 
 export const settingsController = new SettingsController();
